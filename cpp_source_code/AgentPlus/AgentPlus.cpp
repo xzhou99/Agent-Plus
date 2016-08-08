@@ -1128,11 +1128,6 @@ float g_pc_optimal_time_dependenet_dynamic_programming(
 							//					from_node, to_node, new_to_node_arrival_time,  g_link_free_flow_travel_time[link_no]);
 							temporary_label_cost = lp_state_node_label_cost[p][from_node][t][w1] + g_v_vertex_waiting_cost[vehicle_id][from_node][t];
 
-							if (bUpperBoundFlag == true && vehicle_id == 1 && from_node == 9 && t>=30)
-							{
-								TRACE("");
-
-							}
 
 							if (temporary_label_cost < lp_state_node_label_cost[p][from_node][new_to_node_arrival_time][w1]) // we only compare cost at the downstream node ToID at the new arrival time t
 							{
@@ -1581,9 +1576,8 @@ void g_ReadInputData()
 				g_vehicle_capacity[vehicle_no] = -1;
 
 
-				int capacity =1;
-				parser.GetValueByFieldName("capacity", capacity);
-				g_vehicle_capacity[vehicle_no] = max(1, capacity);
+
+				parser.GetValueByFieldName("capacity", g_vehicle_capacity[vehicle_no]);
 				if (g_vehicle_capacity[vehicle_no] < 0)
 				{
 					cout << "Vehicle data must have values in field capacity in file input_agent.csv!" << endl;
@@ -2049,9 +2043,13 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 			if (g_node_passenger_id[node] >= 1 && g_activity_node_starting_time[node] >= 0 && g_activity_node_ending_time[node] >= 0)  // this node corresponds to a dummy node for passenger origin/destination
 			{
 
-					int t = g_activity_node_starting_time[node]; // for starting time only so we can count it for one pax a time
-			
+				for (int t = g_activity_node_starting_time[node]; t <= g_activity_node_ending_time[node]; t++)  // for all vertex in the time window
+				{
+	
 					total_multiplier_price_with_constant += g_passenger_activity_node_multiplier[node][t];
+
+		
+				}
 
 			}
 
@@ -2255,52 +2253,50 @@ float g_UpperBoundGeneration(int LR_Iteration_no)
 		}
 	}
 
-
-	for (int v = 1; v <= g_number_of_vehicles; v++)//note that the scheduling sequence does not matter  here  // include both physical and virtual vehicles
+#pragma omp parallel for
+	for (int ProcessID = 0; ProcessID < g_number_of_threads; ProcessID++)
 	{
+		//step 2: shortest path for vehicle
 
-		// setup 1: set arc cost, to_node_cost and waiting_cost for vehicles
-
-		for (int link = 0; link < g_number_of_links; link++)
+		for (int v = 1; v <= g_number_of_vehicles; v++)//note that the scheduling sequence does not matter  here  // include both physical and virtual vehicles
 		{
+			if (v%g_number_of_threads != ProcessID)  // if vehicle id does not belong processor p, skip // we only perform calculation for a cluster vehicles belong for p 
+				continue;
+			int	id = omp_get_thread_num();  // starting from 0
+
+			cout << "Processor " << ProcessID << " is calculating the shortest paths for vehicle " << v << "..." << endl;
+
+			// setup 1: set arc cost, to_node_cost and waiting_cost for vehicles
+
+			for (int link = 0; link < g_number_of_links; link++)
+			{
+				for (int t = 0; t < g_number_of_time_intervals; t++)
+				{
+					g_v_arc_cost[v][link][t] = g_arc_travel_time[link][t] / 60.0 * g_VOIVTT_per_hour[v];  // 60 min pur hour
+				}
+			}
+
+			// setup waiting cost
+			for (int node = 0; node <= g_number_of_nodes; node++)
+			{
+				for (int t = 0; t < g_number_of_time_intervals; t++)
+				{
+					for (int v = 0; v <= g_number_of_vehicles; v++)
+					{
+						g_v_vertex_waiting_cost[v][node][t] = 1 / 60.0 * 15; // g_VOWT_per_hour[v];
+						g_v_to_node_cost_used_for_upper_bound[v][node][t] = 0;
+					}
+				}
+			}
+			// special case: no waiting cost at vehicle returning depot
+
 			for (int t = 0; t < g_number_of_time_intervals; t++)
 			{
-				g_v_arc_cost[v][link][t] = g_arc_travel_time[link][t] / 60.0 * g_VOIVTT_per_hour[v];  // 60 min pur hour
+				int vehicle_destination_node = g_vehicle_destination_node[v];
+				g_v_vertex_waiting_cost[v][vehicle_destination_node][t] = 0;
 			}
-		}
-
-		// setup waiting cost
-		for (int node = 0; node <= g_number_of_nodes; node++)
-		{
-			for (int t = 0; t < g_number_of_time_intervals; t++)
-			{
-					g_v_vertex_waiting_cost[v][node][t] = g_VOWT_per_hour[v] / 60.0 * 15; // ;
-					g_v_to_node_cost_used_for_upper_bound[v][node][t] = 0;
-			}
-		}
-		// special case: no waiting cost at vehicle returning depot
-
-		for (int t = 0; t < g_number_of_time_intervals; t++)
-		{
-			int vehicle_destination_node = g_vehicle_destination_node[v];
-			g_v_vertex_waiting_cost[v][vehicle_destination_node][t] = 0;
-		}
-
-	}
-
-	int ProcessID = 0;
-
-	for (int v = 1; v <= g_number_of_vehicles; v++)//note that the scheduling sequence does not matter  here  // include both physical and virtual vehicles
-		{
-
 
 			// setup to node cost for each vehicle in finding its own upper bound
-
-		
-		if (v - g_number_of_physical_vehicles == 7)
-		{
-			TRACE("");
-		}
 
 			bool bPickUpNotServedPaxFlag = false;
 			for (int node = 1; node <= g_number_of_nodes; node++)
@@ -2356,7 +2352,12 @@ float g_UpperBoundGeneration(int LR_Iteration_no)
 				g_path_travel_time[v],
 				true);
 
-					
+
+		} // for each v
+	} // for each p
+
+for (int v = 1; v <= g_number_of_vehicles; v++)//note that the scheduling sequence does not matter  here  // include both physical and virtual vehicles
+{
 			//fprintf(g_pFileDebugLog, "\Upper bound: Vehicle %d'  path has %d nodes with a transportation cost of %f and travel time of %d: ",
 			//	v,
 			//	g_vehicle_path_number_of_nodes[v],
@@ -2541,14 +2542,7 @@ float g_UpperBoundGeneration(int LR_Iteration_no)
 				}
 				else
 				{
-					int node_id = g_vehicle_path_node_sequence[v][i];
-					int time_index = g_vehicle_path_time_sequence[v][i];
-					float waiting_cost = g_v_vertex_waiting_cost[v][node_id][time_index];
-
-					if (node_id == 9 && time_index >= 30)
-					{
-						TRACE("");
-					}
+					float waiting_cost = g_v_vertex_waiting_cost[v][g_vehicle_path_node_sequence[v][i]][g_vehicle_path_time_sequence[v][i]];
 					cumulative_upper_bound_cost += waiting_cost;
 					fprintf(g_pFileDebugLog, "UB: --waiting, $%.4f,$%.4f,$*%.4f,-",
 						waiting_cost,
@@ -2916,31 +2910,31 @@ void g_generate_travel_time_matrix()
 
 	// modify the dummy vehicles' arrival time based on the least travel time for corresponding pax
 
-//	for (int p = 1; p <= g_number_of_passengers; p++)
-//	{
-//		int	v = (g_number_of_physical_vehicles + p); //dummy vehicle id
-//
-//		g_external_vehicle_id_map[v] = "virtual"+ std::to_string(v);
-//
-//		int required_time_for_virtual_vehicle_to_serve_pax = g_passenger_departure_time_beginning[p] + 2 * g_passenger_request_travel_time_vector[p] + 60;
-//
-//		if (g_number_of_time_intervals - 1 < required_time_for_virtual_vehicle_to_serve_pax)
-//			g_number_of_time_intervals = required_time_for_virtual_vehicle_to_serve_pax + 1;  //increase planning horizon to complete all jobs
-//
+	for (int p = 1; p <= g_number_of_passengers; p++)
+	{
+		int	v = (g_number_of_physical_vehicles + p); //dummy vehicle id
+
+		g_external_vehicle_id_map[v] = "virtual"+ std::to_string(v);
+
+		int required_time_for_virtual_vehicle_to_serve_pax = g_passenger_departure_time_beginning[p] + 2 * g_passenger_request_travel_time_vector[p] + 60;
+
+		if (g_number_of_time_intervals - 1 < required_time_for_virtual_vehicle_to_serve_pax)
+			g_number_of_time_intervals = required_time_for_virtual_vehicle_to_serve_pax + 1;  //increase planning horizon to complete all jobs
+
+		g_vehicle_arrival_time_beginning[v] = min(g_number_of_time_intervals - 1, required_time_for_virtual_vehicle_to_serve_pax); // ad-hoc upper bound: warning: need to be carefule when there are congestions:  +60 min as buffer // 2* as forward and return trips
 //		g_vehicle_arrival_time_beginning[v] = min(g_number_of_time_intervals - 1, required_time_for_virtual_vehicle_to_serve_pax); // ad-hoc upper bound: warning: need to be carefule when there are congestions:  +60 min as buffer // 2* as forward and return trips
-////		g_vehicle_arrival_time_beginning[v] = min(g_number_of_time_intervals - 1, required_time_for_virtual_vehicle_to_serve_pax); // ad-hoc upper bound: warning: need to be carefule when there are congestions:  +60 min as buffer // 2* as forward and return trips
-//		g_vehicle_arrival_time_ending[v] = g_vehicle_arrival_time_beginning[v];
-//
-//		fprintf(g_pFileOutputLog, "%s%d,%d\n",
-//			
-//			g_external_vehicle_id_map[v].c_str(),
-//		g_vehicle_departure_time_beginning[v],
-//		g_vehicle_arrival_time_ending[v]
-//		
-//		);
-//
-//
-//	}
+		g_vehicle_arrival_time_ending[v] = g_vehicle_arrival_time_beginning[v];
+
+		fprintf(g_pFileOutputLog, "%s%d,%d\n",
+			
+			g_external_vehicle_id_map[v].c_str(),
+		g_vehicle_departure_time_beginning[v],
+		g_vehicle_arrival_time_ending[v]
+		
+		);
+
+
+	}
 
 	// calculate shortest path from each vehicle's origin to all nodes
 
