@@ -41,6 +41,9 @@
     <ClCompile Include="ResearchCode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Branch_and_Bound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AgentPlus.rc">

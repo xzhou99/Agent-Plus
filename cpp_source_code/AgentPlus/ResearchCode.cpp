@@ -16,14 +16,14 @@ extern FILE* g_pFileDebugLog;
 
 #define _RESOLUTION_PER_STEP 10
 
-#define _MAX_NUMBER_OF_CELLS  1552
+#define _MAX_NUMBER_OF_CELLS  100
 
 #define _MAX_NUMBER_OF_POWER_DISTRICTS  2
 
 //1552 16383
 
-#define _MAX_MOVE_STEPS 11
-#define _MAX_TRAINS 10
+#define _MAX_MOVE_STEPS 4
+#define _MAX_TRAINS 1
 
 #define _MAX_TIME_STEPS 360
 
@@ -360,7 +360,91 @@ void g_STVComputing()
 
 	// transition arc
 
-	
+	FILE * st = NULL;
+
+	st = fopen("GAMS_input.txt", "w");
+
+	if (st != NULL)
+	{
+
+		for (int i = 0; i < _MAX_NUMBER_OF_CELLS; i++)
+		{
+
+			for (int j_p = 1; j_p < _MAX_MOVE_STEPS; j_p++)
+			{
+
+				for (int u = 0; u < _MAX_MOVE_STEPS; u++)
+				for (int v = 0; v < _MAX_MOVE_STEPS; v++)
+				{
+					g_TrainArcFlag[0][i][j_p][u][v] = 0;  // init
+					g_TrainArcCost[i][j_p][u][v] = 0;
+
+
+				}
+
+				for (int u = 0; u < _MAX_MOVE_STEPS; u++)
+				{
+					int v = j_p * 2 - u;
+					if (v >= 0 && v < _MAX_MOVE_STEPS && (i + j_p < _MAX_NUMBER_OF_CELLS))
+					{  // v feasible
+						g_TrainArcFlag[0][i][j_p][u][v] = 1;
+						g_TrainArcCost[i][j_p][u][v] = max(0, (v - u) * (u + v) / 2.0);
+
+					}
+				}
+
+			}
+
+
+		}
+
+		// output speed_arc
+		fprintf(st, "parameter speed_arcs(i,j,u,v) /\n");
+
+		for (int i = 0; i < _MAX_NUMBER_OF_CELLS; i++)
+		{
+			for (int j_p = 0; j_p < _MAX_MOVE_STEPS; j_p++)
+			{
+
+				for (int u = 0; u < _MAX_MOVE_STEPS; u++)
+				for (int v = 0; v < _MAX_MOVE_STEPS; v++)
+				{
+					if (g_TrainArcFlag[0][i][j_p][u][v] == 1)
+						fprintf(st, "%d . %d . %d . %d  1\n", i + 1, i + 1 + j_p, u, v);
+
+				}
+
+
+			}
+
+
+		}
+
+		fprintf(st, "/;\n");
+
+		// output arc cost
+		fprintf(st, "parameter cost(i,j,u,v) / \n");
+
+		for (int i = 0; i < _MAX_NUMBER_OF_CELLS; i++)
+		{
+			for (int j_p = 0; j_p < _MAX_MOVE_STEPS; j_p++)
+			{
+
+				for (int u = 0; u < _MAX_MOVE_STEPS; u++)
+				for (int v = 0; v < _MAX_MOVE_STEPS; v++)
+				{
+					if (g_TrainArcFlag[0][i][j_p][u][v] == 1)  // only for feasible arcs 
+						fprintf(st, "%d . %d . %d . %d %4.2f\n", i + 1, i + 1 + j_p, u, v, g_TrainArcCost[i][j_p][u][v]);
+
+				}
+			}
+
+		}
+		fprintf(st, "/;\n");
+
+
+		fclose(st);
+	}
 
 
 

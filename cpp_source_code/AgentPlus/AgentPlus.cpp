@@ -35,11 +35,11 @@ std::map<string, int> g_internal_agent_no_map;
 std::map<int, string> g_external_passenger_id_map;
 std::map<int, string> g_external_vehicle_id_map;
 
-
+VRP_exchange_data g_VRP_data;
 
 int g_passenger_carrying_state_vector[_MAX_NUMBER_OF_STATES][_MAX_NUMBER_OF_PASSENGERS];
 float g_passenger_base_profit[_MAX_NUMBER_OF_PASSENGERS] = { 7 };
-int g_passenger_reguested_vehicle_id[_MAX_NUMBER_OF_PASSENGERS] = { -1 };
+
 float g_passenger_request_travel_time_vector[_MAX_NUMBER_OF_PASSENGERS] = { 999 };
 int g_accessibility_matrix[_MAX_NUMBER_OF_PASSENGERS][_MAX_NUMBER_OF_PASSENGERS];
 
@@ -58,6 +58,9 @@ float** g_vehicle_origin_based_node_travel_time = NULL;
 float** g_vehicle_destination_based_node_travel_time = NULL;
 
 extern float g_UpperBoundGeneration(int LR_Iteration_no);
+
+
+
 
 int get_node_external_number(int node)
 {
@@ -906,6 +909,23 @@ float g_pc_optimal_time_dependenet_dynamic_programming(
 
 }
 
+vector<int> ParseLineToIntegers(string line)
+{
+	vector<int> SeperatedIntegers;
+	string subStr;
+	istringstream ss(line);
+
+
+	char Delimiter = ';';
+
+
+	while (std::getline(ss, subStr, Delimiter))
+	{
+		int integer = atoi(subStr.c_str());
+		SeperatedIntegers.push_back(integer);
+	}
+	return SeperatedIntegers;
+}
 void g_ReadInputData()
 {
 
@@ -1123,6 +1143,9 @@ void g_ReadInputData()
 
 	if (parser.OpenCSVFile("input_agent.csv", true))
 	{
+		V2PAssignment element;
+		g_VRP_data.V2PAssignmentVector.push_back(element);
+
 		while (parser.ReadRecord())  // if this line contains [] mark, then we will also read field headers.
 		{
 
@@ -1196,10 +1219,25 @@ void g_ReadInputData()
 				g_add_new_link(new_artifical_pasenger_destination_id, g_passenger_destination_node[pax_no]);
 
 				parser.GetValueByFieldName("base_profit", g_passenger_base_profit[pax_no]);
-				parser.GetValueByFieldName("requested_vehicle_id", g_passenger_reguested_vehicle_id[pax_no]);
 
-				
+				int request_vehicle_id = -1;
+				parser.GetValueByFieldName("requested_vehicle_id", request_vehicle_id);
 
+				V2PAssignment element; 
+				g_VRP_data.V2PAssignmentVector.push_back(element);
+				g_VRP_data.V2PAssignmentVector[pax_no].input_assigned_vehicle_id = request_vehicle_id;
+
+
+				std::vector<int> prohibited_vehicle_id;
+				string prohibited_vehicle_id_list;
+				parser.GetValueByFieldName("prohibited_vehicle_id_list", prohibited_vehicle_id_list);
+
+				if (prohibited_vehicle_id_list.size() > 0)
+				{
+					prohibited_vehicle_id = ParseLineToIntegers(prohibited_vehicle_id_list);
+					g_VRP_data.V2PAssignmentVector[pax_no].input_prohibited_vehicle_id_vector = prohibited_vehicle_id;
+
+				}
 				
 				
 				g_number_of_passengers++;
@@ -1406,10 +1444,11 @@ void g_Finding_Shorest_Path_For_All_Passengers(float VOIVTT_per_hour)
 }
 
 
-bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()  // with varaible y only
+
+bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(VRP_exchange_data* local_vrp_data)  // with varaible y only
 {
 
-	fprintf(g_pFileOutputLog, "\nIteration,Lower Bound,Upper Bound,Gap,Relative_gap,");
+	fprintf(g_pFileOutputLog, "\nBB Node No, Iteration,Lower Bound,Upper Bound,Gap,Relative_gap,");
 	for (int p = 1; p <= g_number_of_passengers; p++)
 	{
 		fprintf(g_pFileOutputLog, "pax %s,", g_external_passenger_id_map[p].c_str());
@@ -1455,9 +1494,12 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 		{
 			for (int t = 0; t <= g_number_of_time_intervals; t++)
 			{
+				g_passenger_activity_node_multiplier[node][t] = 0;
 				for (int v = 1; v <= g_number_of_vehicles; v++)//note that the scheduling sequence does not matter  here
 				{
 					g_v_vertex_waiting_cost[v][node][t] = 1;
+					g_v_to_node_cost_used_for_lower_bound[v][node][t] = 0;
+					g_v_to_node_cost_used_for_upper_bound[v][node][t] = 0;
 				}
 
 				g_vertex_visit_count[node][t] = 0;
@@ -1481,6 +1523,8 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 	for (int LR_iteration = 0; LR_iteration < g_number_of_LR_iterations; LR_iteration++)  // first loop
 	{
 
+		local_vrp_data->reset_output();
+
 		// reset the vertex visit count
 		for (int node = 0; node < g_number_of_nodes; node++)
 		{
@@ -1495,7 +1539,7 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 		double global_upper_bound = 99999;
 
 		cout << "Lagrangian Iteration " << LR_iteration << "/" << g_number_of_LR_iterations << endl;
-		fprintf(g_pFileDebugLog, "----------Lagrangian Iteration: %d ----------------------------------------\n", LR_iteration + 1);
+		fprintf(g_pFileDebugLog, "-------BBNodeNo %d-Lagrangian Iteration: %d ----------------------------------------\n", local_vrp_data->BBNodeNo, LR_iteration + 1);
 
 		float TotalTripPrice = 0;
 		float TotalTravelTime = 0;
@@ -1575,8 +1619,13 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 					false);
 				global_lower_bound += path_cost_by_vehicle_v;
 
+				fprintf(g_pFileDebugLog, "\nglobal_lower_bound += path_cost_by_vehicle_v, %f, %f", path_cost_by_vehicle_v, global_lower_bound);
+
 			}  //for each v
 		} //for each p
+
+		fprintf(g_pFileDebugLog, "\n");
+
 		for (int v = 1; v <= g_number_of_vehicles; v++)//note that the scheduling sequence does not matter  here  // include both physical and virtual vehicles
 		{
 			//fprintf(g_pFileDebugLog, "\Vehicle %d'  path has %d nodes with a transportation cost of %f and travel time of %d: ",
@@ -1723,6 +1772,13 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 				if (node >= 0 && g_node_passenger_id[node] >= 1) // feasible from node i
 				{
 					g_vertex_visit_count[node][time_index] += 1;  // vehicle uses the link at time t
+
+					if (LR_iteration == g_number_of_LR_iterations - 1)  // last iteration
+					{
+					int pax_id = g_node_passenger_id[node];
+					local_vrp_data->V2PAssignmentVector[pax_id].AddCompettingVehID(v);
+
+					}
 				}
 			}
 
@@ -1747,6 +1803,7 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 
 		}
 
+		
 		global_lower_bound += total_multiplier_price_with_constant*(-1);
 		fprintf(g_pFileDebugLog, "\nupdate lower bound with total price for all pax, global_lower_bound = %f for total (negative) price of %f \n",
 			global_lower_bound, total_multiplier_price_with_constant);
@@ -1779,15 +1836,20 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 
 					g_v_to_node_cost_used_for_lower_bound[0][node][t] = g_passenger_activity_node_multiplier[node][t];
 
+					int pax_id = g_node_passenger_id[node];
 					for (int v = 1; v <= g_number_of_vehicles; v++)
 					{
-						if (g_passenger_reguested_vehicle_id[g_node_passenger_id[node]] <= 0)
+						if (local_vrp_data->V2PAssignmentVector[pax_id].input_assigned_vehicle_id == v) // v sees its assigned pax
+						{
+							g_passenger_activity_node_multiplier[node][t] = -1000;
+							g_v_to_node_cost_used_for_lower_bound[v][node][t] = g_passenger_activity_node_multiplier[node][t];
+						}else if (local_vrp_data->V2PAssignmentVector[pax_id].input_assigned_vehicle_id <= 0 && local_vrp_data->bV2P_Prohibited(pax_id, v) == false)  // open competition
 						{
 							g_v_to_node_cost_used_for_lower_bound[v][node][t] = g_passenger_activity_node_multiplier[node][t];
 						}
-						else if (g_passenger_reguested_vehicle_id[g_node_passenger_id[node]] == v)
+						else
 						{
-							g_v_to_node_cost_used_for_lower_bound[v][node][t] = g_passenger_activity_node_multiplier[node][t];
+							g_v_to_node_cost_used_for_lower_bound[v][node][t] = 0;
 						}
 					}
 					//for pax's origin with the fixed departure time only for now. need to consider destination's price and flexible time window later
@@ -1844,8 +1906,10 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 		//		g_LogFile << "Computational time:," << ctime.GetTotalSeconds() << ",Iterationvehicle_id:, " << LR_iteration + 1 << ",Lower bound in Minute:," << globallowerbound / g_MinuteDivision << ",Upper bound in Minute:," << globalupperbound / g_MinuteDivision << ",Lower bound:," << globallowerbound << ",Upper bound:," << globalupperbound << ",Total Trip Price:," << TotalTripPrice << ",Total Resource Price (Resource Cost):," << TotalResourcePrice << ",Total Travel Time:," << TotalTravelTime << ",Optimality gap:," << (globalupperbound - globallowerbound) / globalupperbound << endl;
 
 
-		g_best_lower_bound = max(g_best_lower_bound, global_lower_bound);  // keep the best lower bound till current iteration
-
+		if (LR_iteration >= 1)  // at second iteration for branched node, we can update lower bound with vehicle_specific price 
+		{
+					g_best_lower_bound = max(g_best_lower_bound, global_lower_bound);  // keep the best lower bound till current iteration
+		}
 		if (global_upper_bound < g_best_upper_bound)
 		{  // update upper bound value
 			g_best_upper_bound = global_upper_bound;
@@ -1867,7 +1931,8 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 			number_of_pax_not_served
 			);
 
-		fprintf(g_pFileOutputLog, "%d,%f,%f,%f,%.3f%%,",
+		fprintf(g_pFileOutputLog, "%d,%d,%f,%f,%f,%.3f%%,",
+			local_vrp_data->BBNodeNo,
 			LR_iteration+1,
 			g_best_lower_bound,
 			g_best_upper_bound,
@@ -1934,6 +1999,9 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables()
 	cout << "End of Lagrangian Iteration Process " << endl;
 	//cout << "Running Time:" << g_GetAppRunningTime() << endl;
 
+
+	local_vrp_data->LBCost = g_best_lower_bound;
+	local_vrp_data->UBCost = g_best_upper_bound;
 
 
 	return true;
@@ -2281,6 +2349,9 @@ float g_UpperBoundGeneration(int LR_Iteration_no)
 				if (node >= 0 && g_node_passenger_id[node] >= 1) // feasible from node i
 				{
 					g_vertex_visit_count[node][time_index] += 1;  // vehicle uses the link at time t
+
+					int pax_id = g_node_passenger_id[node];
+//					g_VRP_data.V2PAssignmentVector[pax_id].output_competting_vehicle_id_vector(v);
 				}
 			}
 
@@ -2766,6 +2837,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 	 fprintf(g_pFileAgentPathLog, "iteration_no,agent_id,agent_type,virtual_vehicle,path_node_sequence,path_time_sequence,path_state_sequence,\n"); // header
 	 
+
 	g_ReadConfiguration();
 	g_ReadInputData();
 	g_create_all_states(g_number_of_passengers, g_max_vehicle_capacity);
@@ -2781,7 +2853,11 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	int i;
 
 	start_t = clock();
-	g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables();
+
+//	g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(g_VRP_data);
+
+	g_Brand_and_Bound();
+
 
 	end_t = clock();
 

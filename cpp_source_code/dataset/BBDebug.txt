@@ -1,0 +1,61 @@
+!!!   Cal: update upper bound from (node UB)99999 to a new 103.467
+   Node 0 with LB =76.0001 UB= 103.467
+   Cal: pax 1 with competing v[ 0]=1
+   Cal: pax 1 with competing v[ 1]=4
+   Cal: pax 4 with competing v[ 0]=1
+   Cal: pax 4 with competing v[ 1]=4
+Find an active node 0 with a  UB cost = 103.467 LB cost = 76.0001
+   Branch: pax 1 with competing v[ 0]=1
+   New Node 1 with vehicle 1 to Pax 1
+   Node 1 with LB =88.2661 UB= 103.467
+   Cal: pax 4 with competing v[ 0]=1
+   Cal: pax 4 with competing v[ 1]=4
+   Branch: pax 1 with competing v[ 1]=4
+   New Node 2 with vehicle 4 to Pax 1
+   Node 2 with LB =91.1995 UB= 106.4
+   Cal: pax 4 with competing v[ 0]=1
+   Cal: pax 4 with competing v[ 1]=4
+   pax 1 with exclusive branches 
+   Node 3 with LB =270.133 UB= 442
+   Cal: pax 4 with competing v[ 0]=1
+   Cal: pax 4 with competing v[ 1]=4
+Find an active node 1 with a  UB cost = 103.467 LB cost = 88.2661
+   Branch: pax 4 with competing v[ 0]=1
+   New Node 4 with vehicle 1 to Pax 4
+   Node 4 with LB =103.467 UB= 103.467
+   Cal: We have a good feasible LB solution! 
+   Branch: pax 4 with competing v[ 1]=4
+   New Node 5 with vehicle 4 to Pax 4
+   Node 5 with LB =103.466 UB= 103.467
+   Cal: We have a good feasible LB solution! 
+!!!   Cal: update upper bound from (node LB)103.467 to 103.466
+   pax 4 with exclusive branches 
+   Node 6 with LB =229.7 UB= 229.7
+   Cal: We have a good feasible LB solution! 
+Find an active node 2 with a  UB cost = 106.4 LB cost = 91.1995
+   Branch: pax 4 with competing v[ 0]=1
+   New Node 7 with vehicle 1 to Pax 4
+   Node 7 with LB =106.399 UB= 106.4
+   Cal: We have a good feasible LB solution! 
+   Branch: pax 4 with competing v[ 1]=4
+   New Node 8 with vehicle 4 to Pax 4
+   Node 8 with LB =106.4 UB= 106.4
+   Cal: We have a good feasible LB solution! 
+   pax 4 with exclusive branches 
+   Node 9 with LB =232.633 UB= 232.633
+   Cal: We have a good feasible LB solution! 
+Find an active node 4 with a  UB cost = 103.467 LB cost = 103.467
+   cut node 4 as LBCost = 103.467 > current best upper bound 103.466
+Find an active node 6 with a  UB cost = 229.7 LB cost = 229.7
+   cut node 6 as LBCost = 229.7 > current best upper bound 103.466
+Find an active node 8 with a  UB cost = 106.4 LB cost = 106.4
+   cut node 8 as LBCost = 106.4 > current best upper bound 103.466
+Find an active node 9 with a  UB cost = 232.633 LB cost = 232.633
+   cut node 9 as LBCost = 232.633 > current best upper bound 103.466
+Find an active node 7 with a  UB cost = 106.4 LB cost = 106.399
+   cut node 7 as LBCost = 106.399 > current best upper bound 103.466
+Find an active node 3 with a  UB cost = 442 LB cost = 270.133
+   cut node 3 as LBCost = 270.133 > current best upper bound 103.466
+Find an active node 5 with a  UB cost = 103.467 LB cost = 103.466
+
+Optimal Cost is 103.466 Number of Nodes checked = 10

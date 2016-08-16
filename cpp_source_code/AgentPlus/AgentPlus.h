@@ -1,7 +1,9 @@
 #pragma once
 
-#include "resource.h"
+
 #include "stdafx.h"
+#include <vector>
+using namespace std; 
 #define _MAX_LABEL_COST 99999
 
 #define _MAX_NUMBER_OF_NODES 30000
@@ -11,6 +13,9 @@
 #define _MAX_NUMBER_OF_VEHICLES 200
 #define _MAX_NUMBER_OF_PASSENGERS 70
 #define _MAX_NUMBER_OF_STATES 300
+extern int g_number_of_physical_vehicles;
+extern int g_number_of_passengers;
+
 
 #define _MAX_NUMBER_OF_OUTBOUND_NODES 10
 extern void g_STVComputing();
@@ -30,9 +35,112 @@ extern float g_optimal_time_dependenet_label_correcting(float arc_cost[_MAX_NUMB
 	float &travel_time_return_value);
 
 extern void g_TrafficSimulation(int SimulationStartTime, int SimulationEndTime, int b_spatial_capacity_flag);
+extern int g_Brand_and_Bound();
 
-using namespace std;
 
+
+
+class V2PAssignment
+{
+public:
+	int input_assigned_vehicle_id;
+	std::vector <int> input_prohibited_vehicle_id_vector;
+	std::vector <int> output_competting_vehicle_id_vector;
+
+
+	V2PAssignment()
+	{
+		input_assigned_vehicle_id = -1;
+	}
+
+	bool AddCompettingVehID(int vehicle_id)
+	{
+		for (int i = 0; i < output_competting_vehicle_id_vector.size(); i++)  // test if the vehicle id is already in the lest
+		{
+			if (output_competting_vehicle_id_vector[i] == vehicle_id)
+				return false;
+		}
+
+		output_competting_vehicle_id_vector.push_back(vehicle_id);
+
+	}
+};
+
+
+class VRP_exchange_data
+{
+public:
+	int BBNodeNo;
+	float UBCost;
+	float LBCost;
+
+	std::vector <V2PAssignment>  V2PAssignmentVector;
+
+		bool CopyAssignmentInput(std::vector <V2PAssignment> ExternalV2PAssignmentVector)
+	{
+		for (int p = 0; p <= g_number_of_passengers; p++)
+		{
+		
+			V2PAssignmentVector[p].input_assigned_vehicle_id = ExternalV2PAssignmentVector[p].input_assigned_vehicle_id;
+				for (int i = 0; i < ExternalV2PAssignmentVector[p].input_prohibited_vehicle_id_vector.size(); i++)
+			{
+					V2PAssignmentVector[p].input_prohibited_vehicle_id_vector.push_back(ExternalV2PAssignmentVector[p].input_prohibited_vehicle_id_vector[i]);
+
+			}
+		}
+		return true;
+	}
+
+	bool AddP2VAssignment(int p, int v)
+	{
+
+		V2PAssignmentVector[p].input_assigned_vehicle_id = v;
+		return true;
+	}
+
+	bool AddProhibitedAssignment(int p, std::vector <int> prohibited_vehicle_id_vector)
+	{
+
+		V2PAssignmentVector[p].input_prohibited_vehicle_id_vector = prohibited_vehicle_id_vector;
+		return true;
+	}
+	bool reset_output()
+	{
+		LBCost = -99999;
+		UBCost = 99999;
+		for (int j = 0; j <= g_number_of_passengers; j++)
+		{
+			V2PAssignmentVector[j].output_competting_vehicle_id_vector.clear();
+		}
+		return true;
+	}
+	bool bV2P_Prohibited(int pax_id, int vehicle_id)
+	{
+
+		for (int i = 0; i < V2PAssignmentVector[pax_id].input_prohibited_vehicle_id_vector.size(); i++)
+		{
+			if (V2PAssignmentVector[pax_id].input_prohibited_vehicle_id_vector[i] == vehicle_id)
+				return true;
+
+		}
+
+		return false;
+
+	}
+	VRP_exchange_data()
+	{
+		BBNodeNo = -1;
+		LBCost = -99999;
+		UBCost = 99999;
+		for (int j = 0; j <= g_number_of_passengers; j++)
+		{
+
+			V2PAssignment element;
+			V2PAssignmentVector.push_back(element);
+		}
+	}
+
+};
 template <typename T>
 T **AllocateDynamicArray(int nRows, int nCols, int initial_value = 0)
 {
@@ -314,3 +422,7 @@ void Deallocate5DDynamicArray(T**** dArray, int nM, int nX, int nY, int nW)
 	delete[] dArray;
 
 }
+
+
+
+extern bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(VRP_exchange_data* local_vrp_data);  // with varaible y only;
