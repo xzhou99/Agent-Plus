@@ -147,7 +147,7 @@ struct comp
 	bool operator()(const Node* lhs,
 	const Node* rhs) const
 	{
-		return lhs->UBCost > rhs->UBCost;
+		return lhs->l_vrp_data.LBCost > rhs->l_vrp_data.LBCost;
 	}
 };
 
@@ -194,6 +194,9 @@ float findMinCost(int max_number_of_nodes)
 
 		BBDebugfile << "Find an active node " << min->node_id << " with a  UB cost = " << min->l_vrp_data.UBCost << " LB cost = " << min->l_vrp_data.LBCost << endl;
 
+
+
+		BBDebugfile << "Find an active node " << min->node_id << " with a  UB cost = " << min->l_vrp_data.UBCost << " LB cost = " << min->l_vrp_data.LBCost << endl;
 		// The found node is deleted from the list of
 		// live nodes
 		pq.pop();
@@ -210,7 +213,12 @@ float findMinCost(int max_number_of_nodes)
 			continue;
 		}
 
+		if (g_Global_LowerBound < min->l_vrp_data.LBCost)
+		{  // update globale lower bound
+			g_Global_LowerBound = min->l_vrp_data.LBCost;
+			BBDebugfile << "***Update Global LB= to  " << g_Global_LowerBound << "; Global UB = " << g_Global_UpperBound << "gap %% = " << (g_Global_UpperBound - g_Global_LowerBound) / g_Global_LowerBound* 100 << " **** " << endl;
 
+		}
 		//branching based competing vehicles
 
 		bool bBranchedFlag = false;
