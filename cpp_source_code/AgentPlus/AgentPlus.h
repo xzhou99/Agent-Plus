@@ -12,7 +12,7 @@ using namespace std;
 
 #define _MAX_NUMBER_OF_VEHICLES 200
 #define _MAX_NUMBER_OF_PASSENGERS 70
-#define _MAX_NUMBER_OF_STATES 300
+#define _MAX_NUMBER_OF_STATES 3000
 extern int g_number_of_physical_vehicles;
 extern int g_number_of_passengers;
 

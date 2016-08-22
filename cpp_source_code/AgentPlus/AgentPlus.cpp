@@ -51,7 +51,7 @@ int g_vehicle_path_time_sequence[_MAX_NUMBER_OF_VEHICLES][_MAX_NUMBER_OF_TIME_IN
 int g_vehicle_path_state_sequence[_MAX_NUMBER_OF_VEHICLES][_MAX_NUMBER_OF_TIME_INTERVALS] = { 0 };
 float g_vehicle_path_cost_sequence[_MAX_NUMBER_OF_VEHICLES][_MAX_NUMBER_OF_TIME_INTERVALS] = { 0 };
 int g_vehicle_id_for_pax_being_served[_MAX_NUMBER_OF_PASSENGERS] = { 0 };
-int g_best_solution_vehicle_id_for_pax_being_served[_MAX_NUMBER_OF_PASSENGERS] = { 0 };
+
 
 float** g_vehicle_origin_based_node_travel_time = NULL;
 float** g_vehicle_destination_based_node_travel_time = NULL;
@@ -76,7 +76,7 @@ public:
 		m_vehicle_capacity = 1;
 		for (int p = 0; p < _MAX_NUMBER_OF_PASSENGERS; p++)
 			passenger_carrying_state[p] = 0;
-		}
+	}
 
 	std::vector<int> m_outgoing_state_index_vector;
 	std::vector<int> m_outgoing_state_change_service_code_vector;
@@ -99,11 +99,11 @@ public:
 			{
 				s << " ";
 			}
-		
+
 			string converted(s.str());
 
 			string_key += converted;
-			}
+		}
 		return string_key;  //e.g. _ _ _ or _1_2_3
 	}
 };
@@ -129,11 +129,11 @@ void g_add_states(int parent_state_index, int number_of_passengers, int capacity
 
 	g_VRStateVector[parent_state_index].m_outgoing_state_index_vector.push_back(parent_state_index);  // link my own state index to the parent state
 	g_VRStateVector[parent_state_index].m_outgoing_state_change_service_code_vector.push_back(0);  // link no change state index to the parent state
-	
+
 	for (int p = 1; p <= number_of_passengers; p++)
 	{
 		if (element.passenger_carrying_state[p] == 0) // not carrying yet
-		{ 
+		{
 			// add pick up state 
 			CVRState new_element;
 			int pax_count = 0;
@@ -141,7 +141,7 @@ void g_add_states(int parent_state_index, int number_of_passengers, int capacity
 			{
 				new_element.passenger_carrying_state[pp] = element.passenger_carrying_state[pp];
 
-				if (element.passenger_carrying_state[pp] ==1)
+				if (element.passenger_carrying_state[pp] == 1)
 					pax_count++;
 			}
 
@@ -212,6 +212,8 @@ OutgoingState g_outgoingStateSet[_MAX_NUMBER_OF_STATES];
 
 int g_outbound_node_size[_MAX_NUMBER_OF_NODES] = { 0 };
 int g_node_passenger_id[_MAX_NUMBER_OF_NODES] = { -1 };
+int g_node_passenger_origin_flag[_MAX_NUMBER_OF_NODES] = { -1 };
+
 
 int g_outbound_node_id[_MAX_NUMBER_OF_NODES][_MAX_NUMBER_OF_OUTBOUND_NODES];
 int g_outbound_link_no[_MAX_NUMBER_OF_NODES][_MAX_NUMBER_OF_OUTBOUND_NODES];
@@ -331,12 +333,20 @@ void g_create_all_states(int number_of_passengers = 10, int capacity = 1)
 		fprintf(g_pFileDebugLog, "\n");
 	}
 }
-int g_add_new_node(int passenger_id, int beginning_time = -1, int end_time = -1)
+int g_add_new_node(int passenger_id, int beginning_time = -1, int end_time = -1, int origin_flag=0)
 {
 	int new_node_number = g_number_of_nodes + 1;
 	g_outbound_node_size[new_node_number] = 0;
 	g_inbound_node_size[new_node_number] = 0;
 	g_node_passenger_id[new_node_number] = passenger_id;
+	
+
+	if (origin_flag == 1)
+	g_node_passenger_origin_flag[new_node_number] = passenger_id;
+	else
+	g_node_passenger_origin_flag[new_node_number] = -1;
+
+
 	g_activity_node_flag[new_node_number] = 1;
 	g_activity_node_starting_time[new_node_number] = beginning_time;
 	g_activity_node_ending_time[new_node_number] = end_time;
@@ -346,7 +356,7 @@ int g_add_new_node(int passenger_id, int beginning_time = -1, int end_time = -1)
 }
 
 int g_add_new_link(int from_node_id, int to_node_id, int passenger_id = 0, int travel_time = 1, double link_length = 1, int number_of_lanes = 1, int mode_code = 0,
-	int capacity_per_time_interval= 1, double speed = 60)
+	int capacity_per_time_interval = 1, double speed = 60)
 {
 	int new_link_id = g_number_of_links;
 	g_outbound_node_id[from_node_id][g_outbound_node_size[from_node_id]] = to_node_id;
@@ -371,9 +381,9 @@ int g_add_new_link(int from_node_id, int to_node_id, int passenger_id = 0, int t
 	g_link_speed[g_number_of_links] = speed;
 	g_link_service_code[g_number_of_links] = passenger_id;
 
-	g_number_of_links++; 
+	g_number_of_links++;
 	return g_number_of_links;
-		
+
 }
 
 int g_get_link_no_based_on_from_node_to_node(int from_node, int to_node)
@@ -390,7 +400,7 @@ int g_get_link_no_based_on_from_node_to_node(int from_node, int to_node)
 		if (g_outbound_node_id[from_node][i] == to_node)
 			return g_outbound_link_no[from_node][i];
 	}
-	return -1; 
+	return -1;
 }
 
 
@@ -432,12 +442,12 @@ void g_allocate_memory(int number_of_processors)
 	int number_of_links = g_number_of_links + 1;
 	int number_of_time_intervals = g_number_of_time_intervals + 1;
 	int number_of_vehicles = g_number_of_vehicles + 1;
-	
+
 	g_v_arc_cost = Allocate3DDynamicArray<float>(number_of_vehicles, number_of_links, number_of_time_intervals);
 	g_v_to_node_cost_used_for_upper_bound = Allocate3DDynamicArray<float>(number_of_vehicles, number_of_nodes, number_of_time_intervals);
 	g_v_to_node_cost_used_for_lower_bound = Allocate3DDynamicArray<float>(number_of_vehicles, number_of_nodes, number_of_time_intervals);
 	g_v_vertex_waiting_cost = Allocate3DDynamicArray<float>(number_of_vehicles, number_of_nodes, number_of_time_intervals);
-	
+
 	if (g_number_of_time_intervals >= _MAX_NUMBER_OF_TIME_INTERVALS)
 	{
 		cout << "Program configuration issue: _MAX_NUMBER_OF_TIME_INTERVALS= " << _MAX_NUMBER_OF_TIME_INTERVALS << "is less than g_number_of_time_intervals = " << g_number_of_time_intervals << endl;
@@ -445,24 +455,24 @@ void g_allocate_memory(int number_of_processors)
 		g_ProgramStop();
 	}
 
-	cout << "number of states = " << g_VRStateVector.size() << endl; 
-	
+	cout << "number of states = " << g_VRStateVector.size() << endl;
+
 	l_state_node_label_cost = Allocate3DDynamicArray<float>(number_of_nodes, number_of_time_intervals, number_of_states);
-	l_state_node_predecessor = Allocate3DDynamicArray<int>( number_of_nodes, number_of_time_intervals, number_of_states);
+	l_state_node_predecessor = Allocate3DDynamicArray<int>(number_of_nodes, number_of_time_intervals, number_of_states);
 	l_state_time_predecessor = Allocate3DDynamicArray<int>(number_of_nodes, number_of_time_intervals, number_of_states);
-	l_state_carrying_predecessor = Allocate3DDynamicArray<int>( number_of_nodes, number_of_time_intervals, number_of_states);
+	l_state_carrying_predecessor = Allocate3DDynamicArray<int>(number_of_nodes, number_of_time_intervals, number_of_states);
 
 	number_of_processors = g_number_of_threads;
-	
-	lp_state_node_label_cost = Allocate4DDynamicArray<float>(number_of_processors,number_of_nodes, number_of_time_intervals, number_of_states);
+
+	lp_state_node_label_cost = Allocate4DDynamicArray<float>(number_of_processors, number_of_nodes, number_of_time_intervals, number_of_states);
 	lp_state_node_predecessor = Allocate4DDynamicArray<int>(number_of_processors, number_of_nodes, number_of_time_intervals, number_of_states);
 	lp_state_time_predecessor = Allocate4DDynamicArray<int>(number_of_processors, number_of_nodes, number_of_time_intervals, number_of_states);
 	lp_state_carrying_predecessor = Allocate4DDynamicArray<int>(number_of_processors, number_of_nodes, number_of_time_intervals, number_of_states);
 
-	g_node_to_node_shorest_travel_time = AllocateDynamicArray<float>(number_of_nodes, number_of_nodes,999);
+	g_node_to_node_shorest_travel_time = AllocateDynamicArray<float>(number_of_nodes, number_of_nodes, 999);
 
-	g_passenger_activity_node_multiplier = AllocateDynamicArray<float>(number_of_nodes, number_of_time_intervals,0);
-	}
+	g_passenger_activity_node_multiplier = AllocateDynamicArray<float>(number_of_nodes, number_of_time_intervals, 0);
+}
 
 
 void g_allocate_memory_travel_time(int number_of_processors)
@@ -495,24 +505,24 @@ void g_free_memory(int number_of_processors)
 	int number_of_time_intervals = g_number_of_time_intervals + 1;
 	int number_of_vehicles = g_number_of_vehicles + 1;
 
-	Deallocate3DDynamicArray<float>(l_state_node_label_cost,  number_of_nodes, number_of_time_intervals);
-	Deallocate3DDynamicArray<int>(l_state_node_predecessor,  number_of_nodes, number_of_time_intervals);
+	Deallocate3DDynamicArray<float>(l_state_node_label_cost, number_of_nodes, number_of_time_intervals);
+	Deallocate3DDynamicArray<int>(l_state_node_predecessor, number_of_nodes, number_of_time_intervals);
 	Deallocate3DDynamicArray<int>(l_state_time_predecessor, number_of_nodes, number_of_time_intervals);
 	Deallocate3DDynamicArray<int>(l_state_carrying_predecessor, number_of_nodes, number_of_time_intervals);
-	
+
 	Deallocate3DDynamicArray<float>(g_v_arc_cost, number_of_vehicles, number_of_links);
 	Deallocate3DDynamicArray<float>(g_v_to_node_cost_used_for_upper_bound, number_of_vehicles, number_of_nodes);
 	Deallocate3DDynamicArray<float>(g_v_to_node_cost_used_for_lower_bound, number_of_vehicles, number_of_nodes);
-	
+
 	Deallocate3DDynamicArray<float>(g_v_vertex_waiting_cost, number_of_vehicles, number_of_nodes);
 
 	number_of_processors = g_number_of_threads;
 
 	Deallocate4DDynamicArray<float>(lp_state_node_label_cost, number_of_processors, number_of_nodes, number_of_time_intervals);
 	Deallocate4DDynamicArray<int>(lp_state_node_predecessor, number_of_processors, number_of_nodes, number_of_time_intervals);
-	Deallocate4DDynamicArray<int>(lp_state_time_predecessor, number_of_processors,  number_of_nodes, number_of_time_intervals);
+	Deallocate4DDynamicArray<int>(lp_state_time_predecessor, number_of_processors, number_of_nodes, number_of_time_intervals);
 	Deallocate4DDynamicArray<int>(lp_state_carrying_predecessor, number_of_processors, number_of_nodes, number_of_time_intervals);
-	
+
 	DeallocateDynamicArray<float>(g_node_to_node_shorest_travel_time, number_of_nodes, number_of_nodes);
 	DeallocateDynamicArray<float>(g_passenger_activity_node_multiplier, number_of_nodes, number_of_time_intervals);
 }
@@ -531,11 +541,11 @@ void g_free_memory(int number_of_processors)
 float g_pc_optimal_time_dependenet_dynamic_programming(
 	int p,
 	int vehicle_id,
-	int origin_node, 
-	int departure_time_beginning, 
-	int departure_time_ending, 
-	int destination_node, 
-	int arrival_time_beginning, 
+	int origin_node,
+	int departure_time_beginning,
+	int departure_time_ending,
+	int destination_node,
+	int arrival_time_beginning,
 	int arrival_time_ending,
 	int &path_number_of_nodes,
 	int path_node_sequence[_MAX_NUMBER_OF_TIME_INTERVALS],
@@ -560,6 +570,8 @@ float g_pc_optimal_time_dependenet_dynamic_programming(
 	{
 		return _MAX_LABEL_COST;
 	}
+
+
 
 	// step 1: Initialization for all nodes
 	for (int i = 0; i <= g_number_of_nodes; i++) //Initialization for all nodes
@@ -586,10 +598,10 @@ float g_pc_optimal_time_dependenet_dynamic_programming(
 	// step 3: //dynamic programming
 	for (int t = departure_time_beginning; t <= arrival_time_ending; t++)  //first loop: time
 	{
-		if (t % 100== 0)
+		if (t % 100 == 0)
 		{
-			if (bUpperBoundFlag ==true)
-			cout << "CPU " << p << ": UB: vehicle " << vehicle_id << " is scanning time " << t << "..." << endl;
+			if (bUpperBoundFlag == true)
+				cout << "CPU " << p << ": UB: vehicle " << vehicle_id << " is scanning time " << t << "..." << endl;
 			else
 				cout << "CPU " << p << ": LB: vehicle " << vehicle_id << " is scanning time " << t << "..." << endl;
 
@@ -603,12 +615,12 @@ float g_pc_optimal_time_dependenet_dynamic_programming(
 
 			// if the total travel time from origin to node i then back to destination is greater than the time window, then skip this node/link to scan
 			float travel_time_3_points = g_vehicle_origin_based_node_travel_time[vehicle_id][from_node] + g_vehicle_destination_based_node_travel_time[vehicle_id][from_node];
-			int time_window_length = g_vehicle_arrival_time_ending[vehicle_id] - g_vehicle_departure_time_ending[vehicle_id];
+			int time_window_length = g_vehicle_arrival_time_ending[vehicle_id] - g_vehicle_departure_time_beginning[vehicle_id];
 
 			// if the total travel time from origin to node i then back to destination is greater than the time window, then skip this node/link to scan
 			if (travel_time_3_points >= time_window_length)
 				continue;  //skip
-			
+
 			int upstream_p = g_node_passenger_id[from_node];
 			int downsteram_p = g_node_passenger_id[to_node];
 
@@ -686,11 +698,21 @@ float g_pc_optimal_time_dependenet_dynamic_programming(
 
 						float to_node_cost = 0;
 
+						//if (vehicle_id == 3 && bUpperBoundFlag && g_v_to_node_cost_used_for_upper_bound[vehicle_id][to_node][new_to_node_arrival_time] < 0)
+						//{
+
+						//	fprintf(g_pFileDebugLog, "MyDebug: checking to node: %d from time %d to time %d, current cost: %.2f, to node cost %.2f\n",
+						//		to_node, t, new_to_node_arrival_time,
+						//		lp_state_node_label_cost[p][from_node][t][w2],
+						//		g_v_to_node_cost_used_for_upper_bound[vehicle_id][to_node][new_to_node_arrival_time]);
+
+						//}
+
 						if (bUpperBoundFlag == false)
 						{
 							to_node_cost = g_v_to_node_cost_used_for_lower_bound[vehicle_id][to_node][new_to_node_arrival_time];
 							if (to_node_cost < -999)
-								TRACE(""); 
+								TRACE("");
 						}
 						else if (bUpperBoundFlag)// when we consider upper bound and virtural vehicle
 							to_node_cost = g_v_to_node_cost_used_for_upper_bound[vehicle_id][to_node][new_to_node_arrival_time];
@@ -700,20 +722,30 @@ float g_pc_optimal_time_dependenet_dynamic_programming(
 						//					from_node, to_node, new_to_node_arrival_time,  g_link_free_flow_travel_time[link_no]);
 						float temporary_label_cost = lp_state_node_label_cost[p][from_node][t][w1] + g_v_arc_cost[vehicle_id][link][t] + to_node_cost;
 
-						if (g_link_service_code[link] != 0 && w1 == 1 && w2 == 0 && temporary_label_cost <-0.1)
+						if (g_link_service_code[link] != 0 && w1 == 1 && w2 == 0 && temporary_label_cost < -0.1)
 							TRACE("delivery link!");
 
 
 						if (temporary_label_cost < lp_state_node_label_cost[p][to_node][new_to_node_arrival_time][w2]) // we only compare cost at the downstream node ToID at the new arrival time t
 						{
 
-							if (g_shortest_path_debugging_flag)
+							int pax_id = vehicle_id - g_number_of_physical_vehicles;
+							/*if (vehicle_id == 3 && bUpperBoundFlag && w2 == 2  && temporary_label_cost<0)
 							{
-								fprintf(g_pFileDebugLog, "DP: updating node: %d from time %d to time %d, current cost: %.2f, from cost %.2f ->%.2f\n",
-									to_node, t, new_to_node_arrival_time,
+
+								fprintf(g_pFileDebugLog, "MyDebug1: updating link %d->%d from time %d to time %d, current cost: %.2f, from cost %.2f ->%.2f\n",
+									from_node, to_node, t, new_to_node_arrival_time,
 									lp_state_node_label_cost[p][from_node][t][w2],
 									lp_state_node_label_cost[p][to_node][new_to_node_arrival_time][w2], temporary_label_cost);
-							}
+
+
+								if (lp_state_node_label_cost[p][destination_node][arrival_time_ending][0] < 0)
+								{
+								
+									fprintf(g_pFileDebugLog, "MyDebug2: destination node <0: %f\n", lp_state_node_label_cost[p][destination_node][arrival_time_ending][0]);
+								}
+
+							}*/
 
 							// update cost label and node/time predecessor
 
@@ -733,7 +765,7 @@ float g_pc_optimal_time_dependenet_dynamic_programming(
 							//					from_node, to_node, new_to_node_arrival_time,  g_link_free_flow_travel_time[link_no]);
 							temporary_label_cost = lp_state_node_label_cost[p][from_node][t][w1] + g_v_vertex_waiting_cost[vehicle_id][from_node][t];
 
-							if (bUpperBoundFlag == true && vehicle_id == 1 && from_node == 9 && t>=30)
+							if (bUpperBoundFlag == true && vehicle_id == 1 && from_node == 9 && t >= 30)
 							{
 								TRACE("");
 
@@ -756,7 +788,7 @@ float g_pc_optimal_time_dependenet_dynamic_programming(
 
 		} // for all link
 	} // for all time t
-	
+
 	total_cost = _MAX_LABEL_COST;
 
 	int min_cost_time_index = arrival_time_ending;
@@ -881,14 +913,14 @@ void g_ReadInputData()
 			g_internal_node_no_map[node_id] = interval_node_no;
 
 			g_external_node_id_map[interval_node_no] = node_id;
-				interval_node_no++;
+			interval_node_no++;
 
 			parser.GetValueByFieldName("node_type", node_type);
 			parser.GetValueByFieldName("x", X);
 			parser.GetValueByFieldName("y", Y);
 
 			g_number_of_nodes++;
-			if (g_number_of_nodes % 1000 ==0)
+			if (g_number_of_nodes % 1000 == 0)
 				cout << "reading " << g_number_of_nodes << " nodes.. " << endl;
 		}
 
@@ -913,13 +945,13 @@ void g_ReadInputData()
 			if (parser.GetValueByFieldName("to_node_id", to_node_id) == false)
 				continue;
 
-			if (from_node_id <= 0 )
+			if (from_node_id <= 0)
 			{
 				cout << "from_node_id " << from_node_id << " is out of range" << endl;
 				g_ProgramStop();
 			}
 
-			if (to_node_id <= 0 )
+			if (to_node_id <= 0)
 			{
 				cout << "to_node_id " << to_node_id << " is out of range" << endl;
 				g_ProgramStop();
@@ -998,7 +1030,7 @@ void g_ReadInputData()
 				parser.GetValueByFieldName("mode_code", mode_code);
 				parser.GetValueByFieldName("lane_capacity_in_vhc_per_hour", capacity_per_time_interval);
 
-				parser.GetValueByFieldName("speed_limit_in_mph", speed);
+				parser.GetValueByFieldName("speed_limit", speed);
 				if (speed >= 70)
 					speed = 70;
 
@@ -1008,16 +1040,16 @@ void g_ReadInputData()
 				travel_time = link_length * 60 / max(1, speed);
 				parser.GetValueByFieldName("jam_density", jam_density);
 
-				if (travel_time > 100)
+				if (travel_time > 200)
 				{
-					cout << "travel_time > 100"; 
+					cout << "travel_time > 200";
 					g_ProgramStop();
 				}
 
 				g_link_from_node_number[g_number_of_links] = directional_from_node_id;
 				g_link_to_node_number[g_number_of_links] = directional_to_node_id;
 
-				g_link_free_flow_travel_time[g_number_of_links] = max(1, travel_time+0.5);   // at least 1 min, round to nearest integers
+				g_link_free_flow_travel_time[g_number_of_links] = max(1, travel_time + 0.5);   // at least 1 min, round to nearest integers
 				g_link_free_flow_travel_time_float_value[g_number_of_links] = travel_time;
 
 				g_link_link_length[g_number_of_links] = link_length;
@@ -1029,11 +1061,11 @@ void g_ReadInputData()
 				// increase the link counter by 1
 				g_number_of_links++;
 
-				if (g_number_of_links % 1000==0)
+				if (g_number_of_links % 1000 == 0)
 					cout << "reading " << g_number_of_links << " links.. " << endl;
 			}
 		}
-		 
+
 		cout << "number of links = " << g_number_of_links << endl;
 
 		fprintf(g_pFileOutputLog, "number of links =,%d\n", g_number_of_links);
@@ -1065,11 +1097,11 @@ void g_ReadInputData()
 
 			if (agent_type == 0) //passenger
 			{
-				int pax_no =  g_number_of_passengers + 1;
+				int pax_no = g_number_of_passengers + 1;
 
 				g_internal_agent_no_map[agent_id] = pax_no;
 				g_external_passenger_id_map[pax_no] = agent_id;
-					
+
 
 				if (pax_no >= _MAX_NUMBER_OF_PASSENGERS)
 				{
@@ -1079,7 +1111,7 @@ void g_ReadInputData()
 
 				parser.GetValueByFieldName("from_node_id", external_from_node_id);
 				parser.GetValueByFieldName("to_node_id", external_to_node_id);
-			
+
 				from_node_id = g_internal_node_no_map[external_from_node_id];
 				to_node_id = g_internal_node_no_map[external_to_node_id];
 
@@ -1101,11 +1133,11 @@ void g_ReadInputData()
 				g_passenger_arrival_time_ending[pax_no] = max(g_passenger_arrival_time_ending[pax_no], g_passenger_arrival_time_beginning[pax_no]);
 				g_number_of_time_intervals = max(g_passenger_arrival_time_ending[pax_no] + 10, g_number_of_time_intervals);
 
-				int new_artifical_pasenger_origin_id = g_add_new_node(pax_no, g_passenger_departure_time_beginning[pax_no], g_passenger_departure_time_ending[pax_no]);
+				int new_artifical_pasenger_origin_id = g_add_new_node(pax_no, g_passenger_departure_time_beginning[pax_no], g_passenger_departure_time_ending[pax_no], 1);
 				g_add_new_link(g_passenger_origin_node[pax_no], new_artifical_pasenger_origin_id, pax_no);  // pick up link
 				g_add_new_link(new_artifical_pasenger_origin_id, g_passenger_origin_node[pax_no]);
 
-				int new_artifical_pasenger_destination_id = g_add_new_node(pax_no, g_passenger_arrival_time_beginning[pax_no], g_passenger_arrival_time_ending[pax_no]);
+				int new_artifical_pasenger_destination_id = g_add_new_node(pax_no, g_passenger_arrival_time_beginning[pax_no], g_passenger_arrival_time_ending[pax_no], 0);
 				g_add_new_link(g_passenger_destination_node[pax_no], new_artifical_pasenger_destination_id, pax_no*(-1));  // delivery link
 				g_add_new_link(new_artifical_pasenger_destination_id, g_passenger_destination_node[pax_no]);
 
@@ -1114,7 +1146,7 @@ void g_ReadInputData()
 				int request_vehicle_id = -1;
 				parser.GetValueByFieldName("requested_vehicle_id", request_vehicle_id);
 
-				V2PAssignment element; 
+				V2PAssignment element;
 				g_VRP_data.V2PAssignmentVector.push_back(element);
 				g_VRP_data.V2PAssignmentVector[pax_no].input_assigned_vehicle_id = request_vehicle_id;
 
@@ -1127,7 +1159,7 @@ void g_ReadInputData()
 					prohibited_vehicle_id = ParseLineToIntegers(prohibited_vehicle_id_list);
 					g_VRP_data.V2PAssignmentVector[pax_no].input_prohibited_vehicle_id_vector = prohibited_vehicle_id;
 				}
-			
+
 				g_number_of_passengers++;
 			}
 			else
@@ -1141,67 +1173,70 @@ void g_ReadInputData()
 				if (agent_type == 1)
 				{
 
-				parser.GetValueByFieldName("from_node_id", external_from_node_id);
-				parser.GetValueByFieldName("to_node_id", external_to_node_id);
+					parser.GetValueByFieldName("from_node_id", external_from_node_id);
+					parser.GetValueByFieldName("to_node_id", external_to_node_id);
 
-				from_node_id = g_internal_node_no_map[external_from_node_id];
-				to_node_id = g_internal_node_no_map[external_to_node_id];
+					from_node_id = g_internal_node_no_map[external_from_node_id];
+					to_node_id = g_internal_node_no_map[external_to_node_id];
 
-				g_vehicle_origin_node[vehicle_no] = from_node_id;
-				g_vehicle_destination_node[vehicle_no] = to_node_id;
+					g_vehicle_origin_node[vehicle_no] = from_node_id;
+					g_vehicle_destination_node[vehicle_no] = to_node_id;
 
-				parser.GetValueByFieldName("departure_time_start", g_vehicle_departure_time_beginning[vehicle_no]);
-				int departure_time_window = 0;
-				parser.GetValueByFieldName("departure_time_window", departure_time_window);
-				g_vehicle_departure_time_ending[vehicle_no] = g_vehicle_departure_time_beginning[vehicle_no] + max(1, departure_time_window);
-				g_vehicle_arrival_time_beginning[vehicle_no] = -1;
-				parser.GetValueByFieldName("arrival_time_start", g_vehicle_arrival_time_beginning[vehicle_no]);
+					int departure_time_start = 0;
+					parser.GetValueByFieldName("departure_time_start", departure_time_start);
 
-				if (g_vehicle_arrival_time_beginning[vehicle_no] < 0)
-				{
-					cout << "Vehicle data must have values in field arrival_time_start in file input_agent.csv!" << endl;
-					g_ProgramStop();
-				}
-				int arrival_time_window = -1;
-				parser.GetValueByFieldName("arrival_time_window", arrival_time_window);
+					g_vehicle_departure_time_beginning[vehicle_no] = departure_time_start;
+					int departure_time_window = 1;
+					parser.GetValueByFieldName("departure_time_window", departure_time_window);
+					g_vehicle_departure_time_ending[vehicle_no] = g_vehicle_departure_time_beginning[vehicle_no] + max(1, departure_time_window);
+					g_vehicle_arrival_time_beginning[vehicle_no] = -1;
+					parser.GetValueByFieldName("arrival_time_start", g_vehicle_arrival_time_beginning[vehicle_no]);
 
-				if (arrival_time_window < 0)
-				{
-					cout << "Vehicle data must have values in field arrival_time_window in file input_agent.csv!" << endl;
-					g_ProgramStop();
-				}
-				g_vehicle_arrival_time_ending[vehicle_no] = g_vehicle_arrival_time_beginning[vehicle_no] + max(1, arrival_time_window);
+					if (g_vehicle_arrival_time_beginning[vehicle_no] < 0)
+					{
+						cout << "Vehicle data must have values in field arrival_time_start in file input_agent.csv!" << endl;
+						g_ProgramStop();
+					}
+					int arrival_time_window = 0;
+					parser.GetValueByFieldName("arrival_time_window", arrival_time_window);
+
+					if (arrival_time_window < 0)
+					{
+						cout << "Vehicle data must have values in field arrival_time_window in file input_agent.csv!" << endl;
+						g_ProgramStop();
+					}
+					g_vehicle_arrival_time_ending[vehicle_no] = g_vehicle_arrival_time_beginning[vehicle_no] + max(1, arrival_time_window);
 
 
-				g_number_of_time_intervals = max(g_vehicle_arrival_time_ending[vehicle_no] + 10, g_number_of_time_intervals);
+					g_number_of_time_intervals = max(g_vehicle_arrival_time_ending[vehicle_no] + 10, g_number_of_time_intervals);
 
-				if (g_vehicle_arrival_time_ending[vehicle_no] < g_vehicle_departure_time_beginning[vehicle_no] + 60)  // we should use a shortest path travel time to check. 
-				{
-					cout << "warning: Arrival time for vehicle " << vehicle_no << " should be " << g_vehicle_departure_time_beginning[vehicle_no] + 120 << endl;
-					g_vehicle_arrival_time_ending[vehicle_no] = g_vehicle_departure_time_beginning[vehicle_no] + 60;
-	//				g_ProgramStop();
-				}
+					if (g_vehicle_arrival_time_ending[vehicle_no] < g_vehicle_departure_time_beginning[vehicle_no] + 60)  // we should use a shortest path travel time to check. 
+					{
+						cout << "warning: Arrival time for vehicle " << vehicle_no << " should be " << g_vehicle_departure_time_beginning[vehicle_no] + 120 << endl;
+						g_vehicle_arrival_time_ending[vehicle_no] = g_vehicle_departure_time_beginning[vehicle_no] + 60;
+						//				g_ProgramStop();
+					}
 
-				g_activity_node_flag[g_vehicle_origin_node[vehicle_no]] = 1;
-				g_activity_node_flag[g_vehicle_destination_node[vehicle_no]] = 1;
-				g_activity_node_ending_time[g_vehicle_origin_node[vehicle_no]] = g_vehicle_departure_time_ending[vehicle_no];
-				g_activity_node_ending_time[g_vehicle_destination_node[vehicle_no]] = g_vehicle_arrival_time_ending[vehicle_no];
-				
-				g_vehicle_capacity[vehicle_no] = -1;
+					g_activity_node_flag[g_vehicle_origin_node[vehicle_no]] = 1;
+					g_activity_node_flag[g_vehicle_destination_node[vehicle_no]] = 1;
+					g_activity_node_ending_time[g_vehicle_origin_node[vehicle_no]] = g_vehicle_departure_time_ending[vehicle_no];
+					g_activity_node_ending_time[g_vehicle_destination_node[vehicle_no]] = g_vehicle_arrival_time_ending[vehicle_no];
 
-				int capacity =1;
-				parser.GetValueByFieldName("capacity", capacity);
-				g_vehicle_capacity[vehicle_no] = max(1, capacity);
-				if (g_vehicle_capacity[vehicle_no] < 0)
-				{
-					cout << "Vehicle data must have values in field capacity in file input_agent.csv!" << endl;
-					g_ProgramStop();
-				}
-				parser.GetValueByFieldName("VOIVTT_per_hour", g_VOIVTT_per_hour[vehicle_no]);
-				parser.GetValueByFieldName("VOWT_per_hour", g_VOWT_per_hour[vehicle_no]);
+					g_vehicle_capacity[vehicle_no] = -1;
 
-				if (g_max_vehicle_capacity < g_vehicle_capacity[vehicle_no])
-					g_max_vehicle_capacity = g_vehicle_capacity[vehicle_no];
+					int capacity = 1;
+					parser.GetValueByFieldName("capacity", capacity);
+					g_vehicle_capacity[vehicle_no] = max(1, capacity);
+					if (g_vehicle_capacity[vehicle_no] < 0)
+					{
+						cout << "Vehicle data must have values in field capacity in file input_agent.csv!" << endl;
+						g_ProgramStop();
+					}
+					parser.GetValueByFieldName("VOIVTT_per_hour", g_VOIVTT_per_hour[vehicle_no]);
+					parser.GetValueByFieldName("VOWT_per_hour", g_VOWT_per_hour[vehicle_no]);
+
+					if (g_max_vehicle_capacity < g_vehicle_capacity[vehicle_no])
+						g_max_vehicle_capacity = g_vehicle_capacity[vehicle_no];
 
 				}
 				g_number_of_vehicles++;
@@ -1219,18 +1254,18 @@ void g_ReadInputData()
 
 	for (int p = 1; p <= g_number_of_passengers; p++)
 	{
-		int	v = (g_number_of_vehicles+1); //new vehicle id
+		int	v = (g_number_of_vehicles + 1); //new vehicle id
 
-			g_vehicle_origin_node[v] = g_passenger_origin_node[p];
-			g_vehicle_destination_node[v] = g_passenger_origin_node[p];
-			g_vehicle_departure_time_beginning[v] = max(0, g_passenger_departure_time_ending[p] - 10);
-			g_vehicle_departure_time_ending[v] = g_vehicle_departure_time_beginning[v];
-			g_vehicle_arrival_time_beginning[v] = g_number_of_time_intervals - 1;
-			g_vehicle_arrival_time_ending[v] = g_number_of_time_intervals - 1;
-			g_vehicle_capacity[v] = 1;
-			g_VOIVTT_per_hour[v] = g_dummy_vehicle_cost_per_hour;
-			g_VOWT_per_hour[v] = 0;
-			g_number_of_vehicles++;
+		g_vehicle_origin_node[v] = g_passenger_origin_node[p];
+		g_vehicle_destination_node[v] = g_passenger_origin_node[p];
+		g_vehicle_departure_time_beginning[v] = max(0, g_vehicle_departure_time_beginning[p] - 10);
+		g_vehicle_departure_time_ending[v] = g_vehicle_departure_time_beginning[v];
+		g_vehicle_arrival_time_beginning[v] = g_number_of_time_intervals - 1;
+		g_vehicle_arrival_time_ending[v] = g_number_of_time_intervals - 1;
+		g_vehicle_capacity[v] = 1;
+		g_VOIVTT_per_hour[v] = g_dummy_vehicle_cost_per_hour;
+		g_VOWT_per_hour[v] = 0;
+		g_number_of_vehicles++;
 	}
 
 	//end of adding dummy vehicles for each passenger
@@ -1248,11 +1283,11 @@ void g_ReadInputData()
 		if (g_link_service_code[link] != 0)
 		{
 
-		fprintf(g_pFileDebugLog, "link no.%d,  %d->%d, service code %d\n",
-			link + 1,
-			from_node,
-			to_node,
-			g_link_service_code[link]);
+			fprintf(g_pFileDebugLog, "link no.%d,  %d->%d, service code %d\n",
+				link + 1,
+				from_node,
+				to_node,
+				g_link_service_code[link]);
 		}
 	}
 
@@ -1274,7 +1309,7 @@ void g_ReadInputData()
 			g_external_node_id_map[g_passenger_origin_node[p]],
 			g_external_node_id_map[g_passenger_destination_node[p]],
 			g_passenger_departure_time_beginning[p],
-			g_passenger_departure_time_beginning[p]+10
+			g_passenger_departure_time_beginning[p] + 10
 			);
 	}
 
@@ -1321,6 +1356,7 @@ void g_Finding_Shorest_Path_For_All_Passengers(float VOIVTT_per_hour)
 }
 
 
+int g_BB_computing_count = 0;
 
 bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(VRP_exchange_data* local_vrp_data)  // with varaible y only
 {
@@ -1328,15 +1364,16 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 	fprintf(g_pFileOutputLog, "\nBB Node No, Iteration,Lower Bound,Upper Bound,Gap,Relative_gap,");
 	for (int p = 1; p <= g_number_of_passengers; p++)
 	{
-		fprintf(g_pFileOutputLog, "pax %s,", g_external_passenger_id_map[p].c_str());
+		fprintf(g_pFileOutputLog, "UB_pax %s,", g_external_passenger_id_map[p].c_str());
 	}
-	fprintf(g_pFileOutputLog, "# of pax not served,");
+	fprintf(g_pFileOutputLog, "UB_# of pax not served,");
 
 	for (int p = 1; p <= g_number_of_passengers; p++)
 	{
-		fprintf(g_pFileOutputLog, "best_p%s,", g_external_passenger_id_map[p].c_str());
+		fprintf(g_pFileOutputLog, "LB_pax %s,", g_external_passenger_id_map[p].c_str());
 	}
-	fprintf(g_pFileOutputLog, "best_# of pax not served,");
+
+	fprintf(g_pFileOutputLog, "LB_# of pax not served,");
 
 	for (int p = 1; p <= g_number_of_passengers; p++)
 	{
@@ -1365,21 +1402,21 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 
 	// setup waiting cost
 
-		for (int node = 0; node <= g_number_of_nodes; node++)
+	for (int node = 0; node <= g_number_of_nodes; node++)
+	{
+		for (int t = 0; t <= g_number_of_time_intervals; t++)
 		{
-			for (int t = 0; t <= g_number_of_time_intervals; t++)
+			g_passenger_activity_node_multiplier[node][t] = 0;
+			for (int v = 1; v <= g_number_of_vehicles; v++)//note that the scheduling sequence does not matter  here
 			{
-				g_passenger_activity_node_multiplier[node][t] = 0;
-				for (int v = 1; v <= g_number_of_vehicles; v++)//note that the scheduling sequence does not matter  here
-				{
-					g_v_vertex_waiting_cost[v][node][t] = 1;
-					g_v_to_node_cost_used_for_lower_bound[v][node][t] = 0;
-					g_v_to_node_cost_used_for_upper_bound[v][node][t] = 0;
-				}
-
-				g_vertex_visit_count[node][t] = 0;
+				g_v_vertex_waiting_cost[v][node][t] = 1;
+				g_v_to_node_cost_used_for_lower_bound[v][node][t] = 0;
+				g_v_to_node_cost_used_for_upper_bound[v][node][t] = 0;
 			}
+
+			g_vertex_visit_count[node][t] = 0;
 		}
+	}
 
 
 
@@ -1631,11 +1668,8 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 				{
 					g_vertex_visit_count[node][time_index] += 1;  // vehicle uses the link at time t
 
-					if (LR_iteration == g_number_of_LR_iterations - 1)  // last iteration
-					{
-					int pax_id = g_node_passenger_id[node];
-					local_vrp_data->V2PAssignmentVector[pax_id].AddCompettingVehID(v);
-					}
+						int pax_id = g_node_passenger_id[node];
+						local_vrp_data->V2PAssignmentVector[pax_id].AddCompettingVehID(v);
 				}
 			}
 		}
@@ -1644,18 +1678,21 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 
 		double total_multiplier_price_with_constant = 0;
 		// scan multipliers 
+
+		fprintf(g_pFileDebugLog, "\n-- total (negative) price --\n");
 		for (int node = 1; node <= g_number_of_nodes; node++)
 		{
-			if (g_node_passenger_id[node] >= 1 && g_activity_node_starting_time[node] >= 0 && g_activity_node_ending_time[node] >= 0)  // this node corresponds to a dummy node for passenger origin/destination
+			if (g_node_passenger_origin_flag[node] >= 1 && g_activity_node_starting_time[node] >= 0 && g_activity_node_ending_time[node] >= 0)  // this node corresponds to a dummy node for passenger origin/destination
 			{
+				int t = g_activity_node_starting_time[node]; // for starting time only so we can count it for one pax a time
 
-					int t = g_activity_node_starting_time[node]; // for starting time only so we can count it for one pax a time
-			
-					total_multiplier_price_with_constant += g_passenger_activity_node_multiplier[node][t];
+				total_multiplier_price_with_constant += g_passenger_activity_node_multiplier[node][t];
+				fprintf(g_pFileDebugLog, "\np = %d, node@%d, (negative) price = %.2f, total = %f \n",
+					g_node_passenger_id[node], node, g_passenger_activity_node_multiplier[node][t], total_multiplier_price_with_constant);
 			}
 		}
 
-		
+
 		global_lower_bound += total_multiplier_price_with_constant*(-1);
 		fprintf(g_pFileDebugLog, "\nupdate lower bound with total price for all paxs, global_lower_bound = %.2f for total (negative) price of %.2f \n",
 			global_lower_bound, total_multiplier_price_with_constant);
@@ -1664,7 +1701,7 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 		double total_multiplier_price = 0;
 		for (int node = 1; node <= g_number_of_nodes; node++)
 		{
-			if (g_node_passenger_id[node] >= 1 && g_activity_node_starting_time[node] >= 0 && g_activity_node_ending_time[node] >= 0)
+			if (g_node_passenger_origin_flag[node] >= 1 && g_activity_node_starting_time[node] >= 0 && g_activity_node_ending_time[node] >= 0)
 			{
 				int number_of_visits = 0;
 				for (int t = g_activity_node_starting_time[node]; t <= g_activity_node_ending_time[node]; t++)
@@ -1682,7 +1719,7 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 				{
 					g_passenger_activity_node_multiplier[node][t] += StepSize * (number_of_visits - 1);  // decrease the value and create profit
 
-					if (g_passenger_activity_node_multiplier[node][t] >=-5)
+					if (g_passenger_activity_node_multiplier[node][t] >= -5)
 						g_passenger_activity_node_multiplier[node][t] = -5;
 
 					g_v_to_node_cost_used_for_lower_bound[0][node][t] = g_passenger_activity_node_multiplier[node][t];
@@ -1694,7 +1731,8 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 						{
 							g_passenger_activity_node_multiplier[node][t] = -1000;
 							g_v_to_node_cost_used_for_lower_bound[v][node][t] = g_passenger_activity_node_multiplier[node][t];
-						}else if (local_vrp_data->V2PAssignmentVector[pax_id].input_assigned_vehicle_id <= 0 && local_vrp_data->bV2P_Prohibited(pax_id, v) == false)  // open competition
+						}
+						else if (local_vrp_data->V2PAssignmentVector[pax_id].input_assigned_vehicle_id <= 0 && local_vrp_data->bV2P_Prohibited(pax_id, v) == false)  // open competition
 						{
 							g_v_to_node_cost_used_for_lower_bound[v][node][t] = g_passenger_activity_node_multiplier[node][t];
 						}
@@ -1739,7 +1777,12 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 
 
 		int number_of_pax_not_served = 0;
+
+		if (g_BB_computing_count <= 10)
+		{
 		global_upper_bound = g_UpperBoundGeneration(LR_iteration);
+		}
+
 		// perform upper bound solutoin based on LR heuristics
 		// for each vehicle
 		// perform DP
@@ -1752,21 +1795,14 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 
 		if (LR_iteration >= 1)  // at second iteration for branched node, we can update lower bound with vehicle_specific price 
 		{
-					g_best_lower_bound = max(g_best_lower_bound, global_lower_bound);  // keep the best lower bound till current iteration
-		}
-		if (global_upper_bound < g_best_upper_bound)
-		{  // update upper bound value
-			g_best_upper_bound = global_upper_bound;
-			//update best upper bound soluti
-			for (int p = 1; p <= g_number_of_passengers; p++)
-			{
-				g_best_solution_vehicle_id_for_pax_being_served[p] = g_vehicle_id_for_pax_being_served[p];
-			}
+			g_best_lower_bound = max(g_best_lower_bound, global_lower_bound);  // keep the best lower bound till current iteration
 		}
 
+		g_best_upper_bound = min(g_best_upper_bound, global_upper_bound);
+		
 
 		fprintf(g_pFileDebugLog, "Summary: Iteration %d: Lower Bound = %.2f, upper Bound = %.2f, gap = %.2f, relative_gap = %.2f%%, # of pax not served = %d\n",
-			LR_iteration+1,
+			LR_iteration + 1,
 			g_best_lower_bound,
 			g_best_upper_bound,
 			(g_best_upper_bound - g_best_lower_bound),
@@ -1776,7 +1812,7 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 		fprintf(g_pFileDebugLog, "******************************************************************************************************************\n\n");
 		fprintf(g_pFileOutputLog, "%d,%d,%f,%f,%f,%.3f%%,",
 			local_vrp_data->BBNodeNo,
-			LR_iteration+1,
+			LR_iteration + 1,
 			g_best_lower_bound,
 			g_best_upper_bound,
 			(g_best_upper_bound - g_best_lower_bound),
@@ -1788,8 +1824,8 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 		{
 			if (g_vehicle_id_for_pax_being_served[p] > g_number_of_physical_vehicles)
 			{
-					fprintf(g_pFileOutputLog, "%d*,", g_vehicle_id_for_pax_being_served[p]);
-					count_not_served++;
+				fprintf(g_pFileOutputLog, "%d*,", g_vehicle_id_for_pax_being_served[p]);
+				count_not_served++;
 			}
 			else
 			{
@@ -1797,22 +1833,23 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 			}
 		}
 
-		fprintf(g_pFileOutputLog, "%d,",count_not_served);
+		fprintf(g_pFileOutputLog, "%d,", count_not_served);
 
-		// best solution 
+		// lower_bound solution 
 		count_not_served = 0;
 		for (int p = 1; p <= g_number_of_passengers; p++)
 		{
-			if (g_best_solution_vehicle_id_for_pax_being_served[p] > g_number_of_physical_vehicles)
+			
+			for (int i = 0; i < local_vrp_data->V2PAssignmentVector[p].output_competting_vehicle_id_vector.size(); i++)
 			{
+				fprintf(g_pFileOutputLog, "%2d", local_vrp_data->V2PAssignmentVector[p].output_competting_vehicle_id_vector[i]);
+			
+				if (local_vrp_data->V2PAssignmentVector[p].output_competting_vehicle_id_vector.size() >= 2 && i != local_vrp_data->V2PAssignmentVector[p].output_competting_vehicle_id_vector.size()-1)
+					fprintf(g_pFileOutputLog, ":");
 
-				fprintf(g_pFileOutputLog, "%d*,", g_best_solution_vehicle_id_for_pax_being_served[p]);
-				count_not_served++;
+			
 			}
-			else
-			{
-				fprintf(g_pFileOutputLog, "%d,", g_best_solution_vehicle_id_for_pax_being_served[p]);
-			}
+			fprintf(g_pFileOutputLog, ",");
 		}
 
 		fprintf(g_pFileOutputLog, "%d,", count_not_served);
@@ -1821,10 +1858,10 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 		for (int p = 1; p <= g_number_of_passengers; p++)
 		{
 
-			fprintf(g_pFileOutputLog, "%.2f,", g_passenger_origin_multiplier[p]*(-1.0));
+			fprintf(g_pFileOutputLog, "%.2f,", g_passenger_origin_multiplier[p] * (-1.0));
 			total_price += g_passenger_origin_multiplier[p];
 		}
-		
+
 		fprintf(g_pFileOutputLog, "%.2f,", total_price*(-1.0));
 		fprintf(g_pFileOutputLog, "\n");
 	}
@@ -1836,7 +1873,7 @@ bool g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(V
 
 	local_vrp_data->LBCost = g_best_lower_bound;
 	local_vrp_data->UBCost = g_best_upper_bound;
-
+	g_BB_computing_count++;
 	return true;
 }
 
@@ -1879,10 +1916,10 @@ float g_UpperBoundGeneration(int LR_Iteration_no)
 		{
 			for (int t = 0; t < g_number_of_time_intervals; t++)
 			{
-					g_v_vertex_waiting_cost[v][node][t] = g_VOWT_per_hour[v] / 60.0 * 15; // ;
-					g_v_to_node_cost_used_for_upper_bound[v][node][t] = 0;
+				g_v_vertex_waiting_cost[v][node][t] = g_VOWT_per_hour[v] / 60.0 * 15; // ;
+				g_v_to_node_cost_used_for_upper_bound[v][node][t] = 0;
 
-					
+
 			}
 		}
 		// special case: no waiting cost at vehicle returning depot
@@ -1897,298 +1934,298 @@ float g_UpperBoundGeneration(int LR_Iteration_no)
 	int ProcessID = 0;
 
 	for (int v = 1; v <= g_number_of_vehicles; v++)//note that the scheduling sequence does not matter  here  // include both physical and virtual vehicles
-		{
+	{
 
-			// setup to node cost for each vehicle in finding its own upper bound
+		// setup to node cost for each vehicle in finding its own upper bound
 
-			if (v - g_number_of_physical_vehicles == 7)
+		if (v - g_number_of_physical_vehicles == 11)
 		{
 			TRACE("");
 		}
 
-			bool bPickUpNotServedPaxFlag = false;
-			for (int node = 1; node <= g_number_of_nodes; node++)
+		bool bPickUpNotServedPaxFlag = false;
+		for (int node = 1; node <= g_number_of_nodes; node++)
+		{
+
+			if (g_node_passenger_origin_flag[node] >= 1 && g_vehicle_id_for_pax_being_served[g_node_passenger_id[node]] == 0 /*not served*/ && g_activity_node_starting_time[node] >= 0 && g_activity_node_ending_time[node] >= 0)
 			{
-
-				if (g_node_passenger_id[node] >= 1 && g_vehicle_id_for_pax_being_served[g_node_passenger_id[node]] == 0 /*not served*/ && g_activity_node_starting_time[node] >= 0 && g_activity_node_ending_time[node] >= 0)
+				for (int t = g_activity_node_starting_time[node]; t <= g_activity_node_ending_time[node]; t++)  // for all vertex in the time window
 				{
-					for (int t = g_activity_node_starting_time[node]; t <= g_activity_node_ending_time[node]; t++)  // for all vertex in the time window
+
+					g_v_to_node_cost_used_for_upper_bound[v][node][t] = g_v_to_node_cost_used_for_lower_bound[v][node][t];  // for existing lower bound solution
+
+					if (v - g_number_of_physical_vehicles == g_node_passenger_id[node])  // for your assigned pax id only
 					{
+						g_v_to_node_cost_used_for_upper_bound[v][node][t] = -10000;  // for existing lower bound solution
+						bPickUpNotServedPaxFlag = true;
+//						fprintf(g_pFileDebugLog, "\Place 1000 $ bill for picking up non-served and dedicated pax id %d for virtual vehicle %d \n ", g_node_passenger_id[node], v);
 
-						g_v_to_node_cost_used_for_upper_bound[v][node][t] = g_v_to_node_cost_used_for_lower_bound[v][node][t];  // for existing lower bound solution
-
-								if (v - g_number_of_physical_vehicles == g_node_passenger_id[node])  // for your assigned pax id only
-							{
-								g_v_to_node_cost_used_for_upper_bound[v][node][t] = (-1)*_MAX_NUMBER_OF_TIME_INTERVALS*g_dummy_vehicle_cost_per_hour;  // for existing lower bound solution
-								bPickUpNotServedPaxFlag = true;
-								//							fprintf(g_pFileDebugLog, "\Place 1000 $ bill for picking up non-served and dedicated pax id %d for virtual vehicle %d \n ", g_node_passenger_id[node], v);
-
-							}
 					}
 				}
 			}
+		}
 
-			//step 2: shortest path for vehicle with to node cost for passengers not being served
-			fprintf(g_pFileDebugLog, "\nDebug: UB iteration %d, Vehicle %d performing DP: origin %d -> destination %d\n",
-				LR_Iteration_no,
-				v,
-				g_vehicle_origin_node[v],
+		//step 2: shortest path for vehicle with to node cost for passengers not being served
+		fprintf(g_pFileDebugLog, "\nDebug: UB iteration %d, Vehicle %d performing DP: origin %d -> destination %d\n",
+			LR_Iteration_no,
+			v,
+			g_vehicle_origin_node[v],
 
-				g_vehicle_destination_node[v]);
-			float path_cost_by_vehicle_v =
-				g_pc_optimal_time_dependenet_dynamic_programming
-				(ProcessID,
-				v,
-				g_vehicle_origin_node[v],
-				g_vehicle_departure_time_beginning[v],
-				g_vehicle_departure_time_ending[v],
-				g_vehicle_destination_node[v],
-				g_vehicle_arrival_time_beginning[v],
-				g_vehicle_arrival_time_ending[v],
-				g_vehicle_path_number_of_nodes[v],
-				g_vehicle_path_node_sequence[v],
-				g_vehicle_path_link_sequence[v],
-				g_vehicle_path_time_sequence[v],
-				g_vehicle_path_state_sequence[v],
-				g_vehicle_path_cost_sequence[v],
-				0,
-				g_vehicle_capacity[v],
-				g_path_travel_time[v],
-				true);
-
-					
-			//fprintf(g_pFileDebugLog, "\Upper bound: Vehicle %d'  path has %d nodes with a transportation cost of %f and travel time of %d: ",
-			//	v,
-			//	g_vehicle_path_number_of_nodes[v],
-			//	path_cost_by_vehicle_v,
-			//	g_path_travel_time[v]);
-			//fprintf(g_pFileDebugLog, "\n");
-
-			fprintf(g_pFileDebugLog, "UB: time, node, state, service code, travel/waiting cost, to_node_cost,cumulative_cost ($), DP_cumulative_cost ($), travel time(interval), travel time(min)");
-			fprintf(g_pFileDebugLog, "\n");
-
-			float cumulative_upper_bound_cost = 0;
-			float DP_cumulative_cost = 0;
-
-			//		day_no, , agent_type, path_node_sequence, path_time_sequence, path_state_sequence,
-
-			if (LR_Iteration_no == g_number_of_LR_iterations - 1)
-			{
-
-				fprintf(g_pFileAgentPathLog, "%d,v%s,v,",
-					LR_Iteration_no + 1,
-					g_external_vehicle_id_map[v].c_str());
+			g_vehicle_destination_node[v]);
+		float path_cost_by_vehicle_v =
+			g_pc_optimal_time_dependenet_dynamic_programming
+			(ProcessID,
+			v,
+			g_vehicle_origin_node[v],
+			g_vehicle_departure_time_beginning[v],
+			g_vehicle_departure_time_ending[v],
+			g_vehicle_destination_node[v],
+			g_vehicle_arrival_time_beginning[v],
+			g_vehicle_arrival_time_ending[v],
+			g_vehicle_path_number_of_nodes[v],
+			g_vehicle_path_node_sequence[v],
+			g_vehicle_path_link_sequence[v],
+			g_vehicle_path_time_sequence[v],
+			g_vehicle_path_state_sequence[v],
+			g_vehicle_path_cost_sequence[v],
+			0,
+			g_vehicle_capacity[v],
+			g_path_travel_time[v],
+			true);
 
 
-				if (v <= g_number_of_physical_vehicles)
-					fprintf(g_pFileAgentPathLog, "physical,");
-				else
-					fprintf(g_pFileAgentPathLog, "virtual,");
+		//fprintf(g_pFileDebugLog, "\Upper bound: Vehicle %d'  path has %d nodes with a transportation cost of %f and travel time of %d: ",
+		//	v,
+		//	g_vehicle_path_number_of_nodes[v],
+		//	path_cost_by_vehicle_v,
+		//	g_path_travel_time[v]);
+		//fprintf(g_pFileDebugLog, "\n");
 
-				for (int i = 0; i < g_vehicle_path_number_of_nodes[v]; i++)
-				{
-					if (g_vehicle_path_node_sequence[v][i] < g_number_of_physical_nodes)  // output only physical nodes
-					{
+		fprintf(g_pFileDebugLog, "UB: time, node, state, service code, travel/waiting cost, to_node_cost,cumulative_cost ($), DP_cumulative_cost ($), travel time(interval), travel time(min)");
+		fprintf(g_pFileDebugLog, "\n");
 
-						if (i < g_vehicle_path_number_of_nodes[v] - 1)
-						{
-							if (g_vehicle_path_node_sequence[v][i] == g_vehicle_path_node_sequence[v][i]
-								&& g_vehicle_path_node_sequence[v][i] == g_vehicle_path_node_sequence[v][i + 1])
+		float cumulative_upper_bound_cost = 0;
+		float DP_cumulative_cost = 0;
 
-								continue;  // dulicated nodes
-						}
+		//		day_no, , agent_type, path_node_sequence, path_time_sequence, path_state_sequence,
 
-						fprintf(g_pFileAgentPathLog, "%d;",
-							get_node_external_number(g_vehicle_path_node_sequence[v][i])
-							);
-					}
-				}
-				fprintf(g_pFileAgentPathLog, ","); //end of field for node sequence
+		if (LR_Iteration_no == g_number_of_LR_iterations - 1)
+		{
 
-				for (int i = 0; i < g_vehicle_path_number_of_nodes[v]; i++)
-				{
-					if (g_vehicle_path_node_sequence[v][i] < g_number_of_physical_nodes)  // output only physical nodes
-					{
-						if (i < g_vehicle_path_number_of_nodes[v] - 1)
-						{
-							if (g_vehicle_path_node_sequence[v][i] == g_vehicle_path_node_sequence[v][i]
-								&& g_vehicle_path_node_sequence[v][i] == g_vehicle_path_node_sequence[v][i + 1])
+			fprintf(g_pFileAgentPathLog, "%d,v%s,v,",
+				LR_Iteration_no + 1,
+				g_external_vehicle_id_map[v].c_str());
 
-								continue;  // dulicated nodes
-						}
 
-						fprintf(g_pFileAgentPathLog, "%d;",
-							g_vehicle_path_time_sequence[v][i]
-							);
-					}
-				}
-				fprintf(g_pFileAgentPathLog, ","); //end of field for time sequence
-
-				fprintf(g_pFileAgentPathLog, "\n"); //end of line
-			}
+			if (v <= g_number_of_physical_vehicles)
+				fprintf(g_pFileAgentPathLog, "physical,");
+			else
+				fprintf(g_pFileAgentPathLog, "virtual,");
 
 			for (int i = 0; i < g_vehicle_path_number_of_nodes[v]; i++)
 			{
-				if (g_external_node_id_map.find(g_vehicle_path_node_sequence[v][i]) != g_external_node_id_map.end())
-				{
-					fprintf(g_pFileDebugLog, "UB: veh %d\t%d\t%d",
-						v,
-						g_vehicle_path_time_sequence[v][i],
-
-						g_vehicle_path_node_sequence[v][i]);
-				}
-
-				else
-				{
-					fprintf(g_pFileDebugLog, "UB: veh %d\t%d\t%d",
-						v,
-						g_vehicle_path_time_sequence[v][i],
-
-						g_vehicle_path_node_sequence[v][i]);
-				}
-
-				DP_cumulative_cost = g_vehicle_path_cost_sequence[v][i];
-
-
-				int state_index = g_vehicle_path_state_sequence[v][i];
-
-				std::string state_str;
-
-				if (state_index < g_VRStateVector.size())
+				if (g_vehicle_path_node_sequence[v][i] < g_number_of_physical_nodes)  // output only physical nodes
 				{
 
-					state_str = g_VRStateVector[state_index].generate_string_key();
-				}
-
-				fprintf(g_pFileDebugLog, "\t[%s]\t",
-					state_str.c_str()
-					);
-
-				int link_id = -1;
-				int service_code = 0;
-				float travel_cost = 0;
-				float to_node_cost = 0;
-				int travel_time = 0;
-				float float_travel_time = 0;
-
-				if (i < g_vehicle_path_number_of_nodes[v] - 1)
-				{
-					link_id = g_get_link_no_based_on_from_node_to_node(g_vehicle_path_node_sequence[v][i], g_vehicle_path_node_sequence[v][i + 1]);
-					if (link_id >= 0)
+					if (i < g_vehicle_path_number_of_nodes[v] - 1)
 					{
+						if (g_vehicle_path_node_sequence[v][i] == g_vehicle_path_node_sequence[v][i]
+							&& g_vehicle_path_node_sequence[v][i] == g_vehicle_path_node_sequence[v][i + 1])
 
-						travel_cost = g_v_arc_cost[v][link_id][g_vehicle_path_time_sequence[v][i]];
-						to_node_cost = g_v_to_node_cost_used_for_lower_bound[v][g_vehicle_path_node_sequence[v][i + 1]][g_vehicle_path_time_sequence[v][i + 1]];
-						cumulative_upper_bound_cost += (travel_cost);  // we do not have "to node cost"
-						service_code = g_link_service_code[link_id];
-						travel_time = g_link_free_flow_travel_time[link_id];
-						float_travel_time = g_link_free_flow_travel_time_float_value[link_id];
+							continue;  // dulicated nodes
 					}
-				}
 
-				if (link_id >= 0)  // physical transportation link
-				{
-
-					std::string service_str;
-
-					if (service_code == 0)
-						service_str = "moving";
-					if (service_code > 0)
-						service_str = "!!pickup";
-					if (service_code < 0)
-						service_str = "drop-off";
-
-					if (service_code == 0)
-					{
-						fprintf(g_pFileDebugLog, "%s\t\t\t%10.2f%10.2f%10.2f%10.2f%10d%10.2f",
-							service_str.c_str(),
-							travel_cost,
-							to_node_cost,
-							cumulative_upper_bound_cost,
-							DP_cumulative_cost,
-							travel_time,
-							float_travel_time);
-					}
-					else
-					{
-						fprintf(g_pFileDebugLog, "%s\t(%6d)%10.2f%10.2f%10.2f%10.2f%10d%10.2f",
-							service_str.c_str(),
-							service_code,
-							travel_cost,
-							to_node_cost,
-							cumulative_upper_bound_cost,
-							DP_cumulative_cost,
-							travel_time,
-							float_travel_time);
-					}
-				}
-				else
-				{
-					int node_id = g_vehicle_path_node_sequence[v][i];
-					int time_index = g_vehicle_path_time_sequence[v][i];
-					float waiting_cost = g_v_vertex_waiting_cost[v][node_id][time_index];
-
-					if (node_id == 9 && time_index >= 30)
-					{
-						TRACE("");
-					}
-					cumulative_upper_bound_cost += waiting_cost;
-					fprintf(g_pFileDebugLog, "waiting...\t\t%10.2f\t    %10.2f%10.2f",
-						waiting_cost,
-						cumulative_upper_bound_cost,
-						DP_cumulative_cost
+					fprintf(g_pFileAgentPathLog, "%d;",
+						get_node_external_number(g_vehicle_path_node_sequence[v][i])
 						);
 				}
-				fprintf(g_pFileDebugLog, "\n");
+			}
+			fprintf(g_pFileAgentPathLog, ","); //end of field for node sequence
+
+			for (int i = 0; i < g_vehicle_path_number_of_nodes[v]; i++)
+			{
+				if (g_vehicle_path_node_sequence[v][i] < g_number_of_physical_nodes)  // output only physical nodes
+				{
+					if (i < g_vehicle_path_number_of_nodes[v] - 1)
+					{
+						if (g_vehicle_path_node_sequence[v][i] == g_vehicle_path_node_sequence[v][i]
+							&& g_vehicle_path_node_sequence[v][i] == g_vehicle_path_node_sequence[v][i + 1])
+
+							continue;  // dulicated nodes
+					}
+
+					fprintf(g_pFileAgentPathLog, "%d;",
+						g_vehicle_path_time_sequence[v][i]
+						);
+				}
+			}
+			fprintf(g_pFileAgentPathLog, ","); //end of field for time sequence
+
+			fprintf(g_pFileAgentPathLog, "\n"); //end of line
+		}
+
+		for (int i = 0; i < g_vehicle_path_number_of_nodes[v]; i++)
+		{
+			if (g_external_node_id_map.find(g_vehicle_path_node_sequence[v][i]) != g_external_node_id_map.end())
+			{
+				fprintf(g_pFileDebugLog, "UB: veh %d\t%d\t%d",
+					v,
+					g_vehicle_path_time_sequence[v][i],
+
+					g_vehicle_path_node_sequence[v][i]);
 			}
 
-			fprintf(g_pFileDebugLog, "\n");
-
-
-			global_upper_bound += cumulative_upper_bound_cost;
-			fprintf(g_pFileDebugLog, "global_upper_bound for vehicle %d += %0.2f = %0.2f\n", v, cumulative_upper_bound_cost, global_upper_bound);
-
-			// step 3: scan all passengers  not being served, mark the passengers just served by vehicle v
-			for (int i = 0; i < g_vehicle_path_number_of_nodes[v] - 1; i++)  // for each link along the path
+			else
 			{
-				int node = g_vehicle_path_node_sequence[v][i];
+				fprintf(g_pFileDebugLog, "UB: veh %d\t%d\t%d",
+					v,
+					g_vehicle_path_time_sequence[v][i],
+
+					g_vehicle_path_node_sequence[v][i]);
+			}
+
+			DP_cumulative_cost = g_vehicle_path_cost_sequence[v][i];
+
+
+			int state_index = g_vehicle_path_state_sequence[v][i];
+
+			std::string state_str;
+
+			if (state_index < g_VRStateVector.size())
+			{
+
+				state_str = g_VRStateVector[state_index].generate_string_key();
+			}
+
+			fprintf(g_pFileDebugLog, "\t[%s]\t",
+				state_str.c_str()
+				);
+
+			int link_id = -1;
+			int service_code = 0;
+			float travel_cost = 0;
+			float to_node_cost = 0;
+			int travel_time = 0;
+			float float_travel_time = 0;
+
+			if (i < g_vehicle_path_number_of_nodes[v] - 1)
+			{
+				link_id = g_get_link_no_based_on_from_node_to_node(g_vehicle_path_node_sequence[v][i], g_vehicle_path_node_sequence[v][i + 1]);
+				if (link_id >= 0)
+				{
+
+					travel_cost = g_v_arc_cost[v][link_id][g_vehicle_path_time_sequence[v][i]];
+					to_node_cost = g_v_to_node_cost_used_for_lower_bound[v][g_vehicle_path_node_sequence[v][i + 1]][g_vehicle_path_time_sequence[v][i + 1]];
+					cumulative_upper_bound_cost += (travel_cost);  // we do not have "to node cost"
+					service_code = g_link_service_code[link_id];
+					travel_time = g_link_free_flow_travel_time[link_id];
+					float_travel_time = g_link_free_flow_travel_time_float_value[link_id];
+				}
+			}
+
+			if (link_id >= 0)  // physical transportation link
+			{
+
+				std::string service_str;
+
+				if (service_code == 0)
+					service_str = "moving";
+				if (service_code > 0)
+					service_str = "!!pickup";
+				if (service_code < 0)
+					service_str = "drop-off";
+
+				if (service_code == 0)
+				{
+					fprintf(g_pFileDebugLog, "%s\t\t\t%10.2f%10.2f%10.2f%10.2f%10d%10.2f",
+						service_str.c_str(),
+						travel_cost,
+						to_node_cost,
+						cumulative_upper_bound_cost,
+						DP_cumulative_cost,
+						travel_time,
+						float_travel_time);
+				}
+				else
+				{
+					fprintf(g_pFileDebugLog, "%s\t(%6d)%10.2f%10.2f%10.2f%10.2f%10d%10.2f",
+						service_str.c_str(),
+						service_code,
+						travel_cost,
+						to_node_cost,
+						cumulative_upper_bound_cost,
+						DP_cumulative_cost,
+						travel_time,
+						float_travel_time);
+				}
+			}
+			else
+			{
+				int node_id = g_vehicle_path_node_sequence[v][i];
 				int time_index = g_vehicle_path_time_sequence[v][i];
+				float waiting_cost = g_v_vertex_waiting_cost[v][node_id][time_index];
 
-				if (node >= 0 && g_node_passenger_id[node] >= 1) // feasible from node i
+				if (node_id == 9 && time_index >= 30)
 				{
-					g_vertex_visit_count[node][time_index] += 1;  // vehicle uses the link at time t
-
-					int pax_id = g_node_passenger_id[node];
-//					g_VRP_data.V2PAssignmentVector[pax_id].output_competting_vehicle_id_vector(v);
+					TRACE("");
 				}
+				cumulative_upper_bound_cost += waiting_cost;
+				fprintf(g_pFileDebugLog, "waiting...\t\t%10.2f\t    %10.2f%10.2f",
+					waiting_cost,
+					cumulative_upper_bound_cost,
+					DP_cumulative_cost
+					);
 			}
+			fprintf(g_pFileDebugLog, "\n");
+		}
 
-			for (int node = 1; node <= g_number_of_nodes; node++)
+		fprintf(g_pFileDebugLog, "\n");
+
+
+		global_upper_bound += cumulative_upper_bound_cost;
+		fprintf(g_pFileDebugLog, "global_upper_bound for vehicle %d += %0.2f = %0.2f\n", v, cumulative_upper_bound_cost, global_upper_bound);
+
+		// step 3: scan all passengers  not being served, mark the passengers just served by vehicle v
+		for (int i = 0; i < g_vehicle_path_number_of_nodes[v] - 1; i++)  // for each link along the path
+		{
+			int node = g_vehicle_path_node_sequence[v][i];
+			int time_index = g_vehicle_path_time_sequence[v][i];
+
+			if (node >= 0 && g_node_passenger_id[node] >= 1) // feasible from node i
 			{
-				if (g_node_passenger_id[node] >= 1 && g_vehicle_id_for_pax_being_served[g_node_passenger_id[node]] == 0 /*not served*/ && g_activity_node_starting_time[node] >= 0 && g_activity_node_ending_time[node] >= 0)
+				g_vertex_visit_count[node][time_index] += 1;  // vehicle uses the link at time t
+
+				int pax_id = g_node_passenger_id[node];
+				//					g_VRP_data.V2PAssignmentVector[pax_id].output_competting_vehicle_id_vector(v);
+			}
+		}
+
+		for (int node = 1; node <= g_number_of_nodes; node++)
+		{
+			if (g_node_passenger_origin_flag[node] >= 1 && g_vehicle_id_for_pax_being_served[g_node_passenger_id[node]] == 0 /*not served*/ && g_activity_node_starting_time[node] >= 0 && g_activity_node_ending_time[node] >= 0)
+			{
+				int number_of_visits = 0;
+				for (int t = g_activity_node_starting_time[node]; t <= g_activity_node_ending_time[node]; t++)
 				{
-					int number_of_visits = 0;
-					for (int t = g_activity_node_starting_time[node]; t <= g_activity_node_ending_time[node]; t++)
-					{
-						number_of_visits += g_vertex_visit_count[node][t];
-					}
+					number_of_visits += g_vertex_visit_count[node][t];
+				}
 
-					if (number_of_visits >= 1)
-					{
-						g_vehicle_id_for_pax_being_served[g_node_passenger_id[node]] = v;
-						fprintf(g_pFileDebugLog, "\!!! LR Iteration %d: Passenger %d being served by vehicle %d\n",
-							LR_Iteration_no,
-							g_node_passenger_id[node],
-							v);
+				if (number_of_visits >= 1)
+				{
+					g_vehicle_id_for_pax_being_served[g_node_passenger_id[node]] = v;
+					fprintf(g_pFileDebugLog, "\!!! LR Iteration %d: Passenger %d being served by vehicle %d\n",
+						LR_Iteration_no,
+						g_node_passenger_id[node],
+						v);
 
-						for (int t = g_activity_node_starting_time[node]; t <= g_activity_node_ending_time[node]; t++)  // for all vertex in the time window
-						{
-							if (v + 1 <= g_number_of_physical_vehicles)
-							g_v_to_node_cost_used_for_upper_bound[v+1][node][t] = 0;
-						}
+					for (int t = g_activity_node_starting_time[node]; t <= g_activity_node_ending_time[node]; t++)  // for all vertex in the time window
+					{
+						if (v + 1 <= g_number_of_physical_vehicles)
+							g_v_to_node_cost_used_for_upper_bound[v + 1][node][t] = 0;
 					}
 				}
 			}
+		}
 	}  //end for vehicle
 
 	// after running all physical vehicles, we default to the virutal or dummy vehicles
@@ -2210,16 +2247,16 @@ float g_UpperBoundGeneration(int LR_Iteration_no)
 
 	for (int p = 1; p <= g_number_of_passengers; p++)
 	{
-			if (g_vehicle_id_for_pax_being_served[p] <= g_number_of_physical_vehicles)
-			{
-				fprintf(g_pFileDebugLog, "Summary: Iteration %d, pax %d -> veh %d\n",
-					LR_Iteration_no, p, g_vehicle_id_for_pax_being_served[p]);
-			}
-			else
-			{
-				fprintf(g_pFileDebugLog, "Summary: Iteration %d, pax %d -> ** virtual veh %d\n",
-					LR_Iteration_no, p, g_vehicle_id_for_pax_being_served[p]);
-			}
+		if (g_vehicle_id_for_pax_being_served[p] <= g_number_of_physical_vehicles)
+		{
+			fprintf(g_pFileDebugLog, "Summary: Iteration %d, pax %d -> veh %d\n",
+				LR_Iteration_no, p, g_vehicle_id_for_pax_being_served[p]);
+		}
+		else
+		{
+			fprintf(g_pFileDebugLog, "Summary: Iteration %d, pax %d -> ** virtual veh %d\n",
+				LR_Iteration_no, p, g_vehicle_id_for_pax_being_served[p]);
+		}
 	}
 
 	return  global_upper_bound;
@@ -2250,7 +2287,7 @@ void g_ReadConfiguration()
 			parser.GetValueByFieldName("shortest_path_debugging_details", g_shortest_path_debugging_flag);
 			parser.GetValueByFieldName("dummy_vehicle_cost_per_hour", g_dummy_vehicle_cost_per_hour);
 			parser.GetValueByFieldName("max_number_of_threads_to_be_used", number_of_threads);
-			
+
 			if (number_of_threads <= 0)
 				number_of_threads = 1;
 
@@ -2330,7 +2367,7 @@ float g_node_label_earliest_arrival_time[_MAX_NUMBER_OF_NODES];
 int g_node_static_predecessor[_MAX_NUMBER_OF_NODES];
 
 float g_optimal_label_correcting(int origin_node, int departure_time)
-	// time-dependent label correcting algorithm with double queue implementation
+// time-dependent label correcting algorithm with double queue implementation
 {
 	int internal_debug_flag = 0;
 
@@ -2434,10 +2471,10 @@ void g_generate_travel_time_matrix()
 
 	// for each pax
 	for (int p = 1; p <= g_number_of_passengers; p++)
-	{ 
-		cout << ">>find shortest path tree for pax p = " << p << "..." << endl; 
+	{
+		cout << ">>find shortest path tree for pax p = " << p << "..." << endl;
 		g_optimal_label_correcting(g_passenger_origin_node[p], g_passenger_departure_time_beginning[p]);
-		
+
 
 		float earliest_arrival_time = g_node_to_node_shorest_travel_time[g_passenger_origin_node[p]][g_passenger_destination_node[p]];
 		g_passenger_request_travel_time_vector[p] = max(1, earliest_arrival_time - g_passenger_departure_time_beginning[p]);
@@ -2449,7 +2486,7 @@ void g_generate_travel_time_matrix()
 			p, g_passenger_departure_time_beginning[p],
 			g_passenger_request_travel_time_vector[p],
 			earliest_arrival_time);
-			}
+	}
 
 	//check rule 1:
 	for (int p1 = 1; p1 <= g_number_of_passengers; p1++)
@@ -2483,31 +2520,31 @@ void g_generate_travel_time_matrix()
 
 	// modify the dummy vehicles' arrival time based on the least travel time for corresponding pax
 
-//	for (int p = 1; p <= g_number_of_passengers; p++)
-//	{
-//		int	v = (g_number_of_physical_vehicles + p); //dummy vehicle id
-//
-//		g_external_vehicle_id_map[v] = "virtual"+ std::to_string(v);
-//
-//		int required_time_for_virtual_vehicle_to_serve_pax = g_passenger_departure_time_beginning[p] + 2 * g_passenger_request_travel_time_vector[p] + 60;
-//
-//		if (g_number_of_time_intervals - 1 < required_time_for_virtual_vehicle_to_serve_pax)
-//			g_number_of_time_intervals = required_time_for_virtual_vehicle_to_serve_pax + 1;  //increase planning horizon to complete all jobs
-//
-//		g_vehicle_arrival_time_beginning[v] = min(g_number_of_time_intervals - 1, required_time_for_virtual_vehicle_to_serve_pax); // ad-hoc upper bound: warning: need to be carefule when there are congestions:  +60 min as buffer // 2* as forward and return trips
-////		g_vehicle_arrival_time_beginning[v] = min(g_number_of_time_intervals - 1, required_time_for_virtual_vehicle_to_serve_pax); // ad-hoc upper bound: warning: need to be carefule when there are congestions:  +60 min as buffer // 2* as forward and return trips
-//		g_vehicle_arrival_time_ending[v] = g_vehicle_arrival_time_beginning[v];
-//
-//		fprintf(g_pFileOutputLog, "%s%d,%d\n",
-//			
-//			g_external_vehicle_id_map[v].c_str(),
-//		g_vehicle_departure_time_beginning[v],
-//		g_vehicle_arrival_time_ending[v]
-//		
-//		);
-//
-//
-//	}
+	//	for (int p = 1; p <= g_number_of_passengers; p++)
+	//	{
+	//		int	v = (g_number_of_physical_vehicles + p); //dummy vehicle id
+	//
+	//		g_external_vehicle_id_map[v] = "virtual"+ std::to_string(v);
+	//
+	//		int required_time_for_virtual_vehicle_to_serve_pax = g_passenger_departure_time_beginning[p] + 2 * g_passenger_request_travel_time_vector[p] + 60;
+	//
+	//		if (g_number_of_time_intervals - 1 < required_time_for_virtual_vehicle_to_serve_pax)
+	//			g_number_of_time_intervals = required_time_for_virtual_vehicle_to_serve_pax + 1;  //increase planning horizon to complete all jobs
+	//
+	//		g_vehicle_arrival_time_beginning[v] = min(g_number_of_time_intervals - 1, required_time_for_virtual_vehicle_to_serve_pax); // ad-hoc upper bound: warning: need to be carefule when there are congestions:  +60 min as buffer // 2* as forward and return trips
+	////		g_vehicle_arrival_time_beginning[v] = min(g_number_of_time_intervals - 1, required_time_for_virtual_vehicle_to_serve_pax); // ad-hoc upper bound: warning: need to be carefule when there are congestions:  +60 min as buffer // 2* as forward and return trips
+	//		g_vehicle_arrival_time_ending[v] = g_vehicle_arrival_time_beginning[v];
+	//
+	//		fprintf(g_pFileOutputLog, "%s%d,%d\n",
+	//			
+	//			g_external_vehicle_id_map[v].c_str(),
+	//		g_vehicle_departure_time_beginning[v],
+	//		g_vehicle_arrival_time_ending[v]
+	//		
+	//		);
+	//
+	//
+	//	}
 
 	// calculate shortest path from each vehicle's origin to all nodes
 
@@ -2519,8 +2556,8 @@ void g_generate_travel_time_matrix()
 		for (int i = 1; i <= g_number_of_nodes; i++) //Initialization for all nodes
 		{
 			g_vehicle_origin_based_node_travel_time[v][i] = max(1, g_node_label_earliest_arrival_time[i] - g_vehicle_departure_time_beginning[v]);
-		
-		//	fprintf(g_pFileOutputLog, "V %d DN %d =,%f\n", v, i, g_vehicle_origin_based_node_travel_time[v][i]);
+
+			//	fprintf(g_pFileOutputLog, "V %d DN %d =,%f\n", v, i, g_vehicle_origin_based_node_travel_time[v][i]);
 		}
 	}
 	// calculate shortest path from each vehicle's destination to all nodes
@@ -2533,7 +2570,7 @@ void g_generate_travel_time_matrix()
 		for (int i = 0; i <= g_number_of_nodes; i++) //Initialization for all nodes
 		{
 			g_vehicle_destination_based_node_travel_time[v][i] = max(1, g_node_label_earliest_arrival_time[i]);
-		//	fprintf(g_pFileOutputLog, "V %d ON %d =,%f\n", v, i, g_vehicle_destination_based_node_travel_time[v][i]);
+			//	fprintf(g_pFileOutputLog, "V %d ON %d =,%f\n", v, i, g_vehicle_destination_based_node_travel_time[v][i]);
 
 		}
 	}
@@ -2559,8 +2596,8 @@ void g_generate_travel_time_matrix()
 			float travel_time_3_points = g_vehicle_origin_based_node_travel_time[v][i] + g_vehicle_destination_based_node_travel_time[v][i];
 
 			// if the total travel time from origin to node i then back to destination is greater than the time window, then skip this node/link to scan
-		if (travel_time_3_points >= time_window_length)
-					number_of_nodes_to_be_skipped++;
+			if (travel_time_3_points >= time_window_length)
+				number_of_nodes_to_be_skipped++;
 		}
 		fprintf(g_pFileOutputLog, "%.2f%%,", number_of_nodes_to_be_skipped*100.0 / max(1, g_number_of_nodes));
 	}
@@ -2596,24 +2633,24 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 	g_pFileDebugLog = fopen("Debug.txt", "w");
 	if (g_pFileDebugLog == NULL)
-	{ 
+	{
 		cout << "File Debug.txt cannot be opened." << endl;
 		g_ProgramStop();
 	}
-	 g_pFileOutputLog = fopen("output_solution.csv", "w");
-	 if (g_pFileOutputLog == NULL)
-	 {
-		 cout << "File output_solution.csv cannot be opened." << endl;
-		 g_ProgramStop();
-	 }
-	 g_pFileAgentPathLog = fopen("agent_path.csv", "w");
-	 if (g_pFileAgentPathLog == NULL)
-	 {
-		 cout << "File agent_path.csv cannot be opened." << endl;
-		 g_ProgramStop();
-	 }
+	g_pFileOutputLog = fopen("output_solution.csv", "w");
+	if (g_pFileOutputLog == NULL)
+	{
+		cout << "File output_solution.csv cannot be opened." << endl;
+		g_ProgramStop();
+	}
+	g_pFileAgentPathLog = fopen("agent_path.csv", "w");
+	if (g_pFileAgentPathLog == NULL)
+	{
+		cout << "File agent_path.csv cannot be opened." << endl;
+		g_ProgramStop();
+	}
 
-	 fprintf(g_pFileAgentPathLog, "iteration_no,agent_id,agent_type,virtual_vehicle,path_node_sequence,path_time_sequence,path_state_sequence,\n"); // header
+	fprintf(g_pFileAgentPathLog, "iteration_no,agent_id,agent_type,virtual_vehicle,path_node_sequence,path_time_sequence,path_state_sequence,\n"); // header
 
 	g_ReadConfiguration();
 	g_ReadInputData();
@@ -2621,7 +2658,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 	g_allocate_memory_travel_time(0);
 	g_generate_travel_time_matrix();
-	
+
 	//DP
 	g_allocate_memory(0);
 
@@ -2631,7 +2668,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 	start_t = clock();
 
-//	g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(g_VRP_data);
+//	g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(&g_VRP_data);
 
 	g_Brand_and_Bound();
 
@@ -2643,7 +2680,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 	fprintf(g_pFileDebugLog, "CPU Running Time = %ld milliseconds\n", total_t);
 	fprintf(g_pFileOutputLog, "CPU Running Time =,%ld, milliseconds\n", total_t);
-	
+
 	fclose(g_pFileOutputLog);
 	fclose(g_pFileDebugLog);
 	fclose(g_pFileAgentPathLog);

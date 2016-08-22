@@ -14,6 +14,7 @@
 #define N_PAX _MAX_NUMBER_OF_PASSENGERS 
 #define N_VEH _MAX_NUMBER_OF_VEHICLES
 
+extern VRP_exchange_data g_VRP_data;
 ofstream BBDebugfile;
 
 float g_Global_LowerBound=-99999;
@@ -172,25 +173,28 @@ float findMinCost(int max_number_of_nodes)
 
 	// Create a priority queue to store live nodes of
 	// search tree;
-	priority_queue<Node*, std::vector<Node*>, comp> pq;
+	priority_queue<Node*, std::vector<Node*>, comp> priority_queue;
 
 	// initailize heap to dummy node with cost 0
 	VRP_exchange_data vrp_data;
 
 	Node* root = newNode(vrp_data, NULL);
+
+	root->l_vrp_data.CopyAssignmentInput(g_VRP_data.V2PAssignmentVector);
+
 	root->CalculateCost();
 
 	// Add dummy node to list of live nodes;
-	pq.push(root);
+	priority_queue.push(root);
 
 	// Finds a active node with least cost,
 	// add its childrens to list of active nodes and
 	// finally deletes it from the list.
 	int search_count = 0;
-	while (!pq.empty())
+	while (!priority_queue.empty())
 	{
 		// Find a active node with least estimated cost
-		Node* min = pq.top();
+		Node* min = priority_queue.top();
 
 		BBDebugfile << "Find an active node " << min->node_id << " with a  UB cost = " << min->l_vrp_data.UBCost << " LB cost = " << min->l_vrp_data.LBCost << endl;
 
@@ -199,7 +203,7 @@ float findMinCost(int max_number_of_nodes)
 		BBDebugfile << "Find an active node " << min->node_id << " with a  UB cost = " << min->l_vrp_data.UBCost << " LB cost = " << min->l_vrp_data.LBCost << endl;
 		// The found node is deleted from the list of
 		// live nodes
-		pq.pop();
+		priority_queue.pop();
 
 
 
@@ -247,7 +251,7 @@ float findMinCost(int max_number_of_nodes)
 
 					child->CalculateCost();
 					// Add child to list of live nodes;
-					pq.push(child);
+					priority_queue.push(child);
 				}
 
 				// last exclusive branch
@@ -258,7 +262,7 @@ float findMinCost(int max_number_of_nodes)
 				child->l_vrp_data.AddProhibitedAssignment(p, prohibited_vehicle_id_vector);
 				child->CalculateCost();
 				// Add child to list of live nodes;
-				pq.push(child);
+				priority_queue.push(child);
 
 				break;  // branch once and break
 			}
