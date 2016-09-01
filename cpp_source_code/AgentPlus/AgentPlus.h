@@ -20,6 +20,7 @@ extern int g_number_of_passengers;
 #define _MAX_NUMBER_OF_OUTBOUND_NODES 10
 extern void g_STVComputing();
 extern void g_DynamicProgramming_transition_arc(int k);
+extern int g_number_of_time_intervals;
 
 extern int g_vehicle_path_node_sequence[_MAX_NUMBER_OF_VEHICLES][_MAX_NUMBER_OF_TIME_INTERVALS];
 extern int g_vehicle_path_link_sequence[_MAX_NUMBER_OF_VEHICLES][_MAX_NUMBER_OF_TIME_INTERVALS];
@@ -38,7 +39,124 @@ extern void g_TrafficSimulation(int SimulationStartTime, int SimulationEndTime, 
 extern int g_Brand_and_Bound();
 
 
+extern int g_outbound_node_size[_MAX_NUMBER_OF_NODES];
+extern int g_node_passenger_id[_MAX_NUMBER_OF_NODES];
+extern int g_node_passenger_origin_flag[_MAX_NUMBER_OF_NODES];
 
+
+extern int g_outbound_node_id[_MAX_NUMBER_OF_NODES][_MAX_NUMBER_OF_OUTBOUND_NODES];
+extern int g_outbound_link_no[_MAX_NUMBER_OF_NODES][_MAX_NUMBER_OF_OUTBOUND_NODES];
+extern int g_activity_node_flag[_MAX_NUMBER_OF_NODES];
+extern int g_activity_node_ending_time[_MAX_NUMBER_OF_NODES];
+extern int g_activity_node_starting_time[_MAX_NUMBER_OF_NODES];
+
+extern int g_inbound_node_size[_MAX_NUMBER_OF_NODES];
+extern int g_inbound_node_id[_MAX_NUMBER_OF_NODES][_MAX_NUMBER_OF_OUTBOUND_NODES];
+extern int g_inbound_link_no[_MAX_NUMBER_OF_NODES][_MAX_NUMBER_OF_OUTBOUND_NODES];
+
+extern float** g_passenger_activity_node_multiplier;
+
+extern int g_link_free_flow_travel_time[_MAX_NUMBER_OF_LINKS];
+extern float g_link_free_flow_travel_time_float_value[_MAX_NUMBER_OF_LINKS];
+
+extern float g_link_link_length[_MAX_NUMBER_OF_LINKS];
+extern int g_link_number_of_lanes[_MAX_NUMBER_OF_LINKS];
+extern int g_link_mode_code[_MAX_NUMBER_OF_LINKS];
+extern float g_link_capacity_per_time_interval[_MAX_NUMBER_OF_LINKS];
+extern float g_link_jam_density[_MAX_NUMBER_OF_LINKS];
+extern int g_link_service_code[_MAX_NUMBER_OF_LINKS];
+
+extern float g_link_speed[_MAX_NUMBER_OF_LINKS];
+extern int g_link_from_node_number[_MAX_NUMBER_OF_LINKS];
+extern int g_link_to_node_number[_MAX_NUMBER_OF_LINKS];
+
+extern float g_VOIVTT_per_hour[_MAX_NUMBER_OF_VEHICLES];
+extern float g_VOWT_per_hour[_MAX_NUMBER_OF_VEHICLES];
+
+extern int g_vehicle_path_number_of_nodes[_MAX_NUMBER_OF_VEHICLES];
+
+extern int g_vehicle_origin_node[_MAX_NUMBER_OF_VEHICLES];  // for vehcile routings
+extern int g_vehicle_departure_time_beginning[_MAX_NUMBER_OF_VEHICLES];
+extern int g_vehicle_departure_time_ending[_MAX_NUMBER_OF_VEHICLES];
+extern int g_vehicle_destination_node[_MAX_NUMBER_OF_VEHICLES];
+extern int g_vehicle_arrival_time_beginning[_MAX_NUMBER_OF_VEHICLES];
+extern int g_vehicle_arrival_time_ending[_MAX_NUMBER_OF_VEHICLES];
+
+extern int g_passenger_origin_node[_MAX_NUMBER_OF_PASSENGERS];  // traveling passengers
+extern int g_passenger_departure_time_beginning[_MAX_NUMBER_OF_PASSENGERS];
+extern int g_passenger_departure_time_ending[_MAX_NUMBER_OF_PASSENGERS];
+extern int g_passenger_destination_node[_MAX_NUMBER_OF_PASSENGERS];
+extern int g_passenger_dummy_destination_node[_MAX_NUMBER_OF_PASSENGERS];
+
+extern int g_passenger_arrival_time_beginning[_MAX_NUMBER_OF_PASSENGERS];
+extern int g_passenger_arrival_time_ending[_MAX_NUMBER_OF_PASSENGERS];
+extern float g_passenger_origin_multiplier[_MAX_NUMBER_OF_PASSENGERS];
+extern float g_passenger_destination_multiplier[_MAX_NUMBER_OF_PASSENGERS] ;
+
+//float g_passenger_request_cancelation_cost[_MAX_NUMBER_OF_PASSENGERS] = { 0 };
+
+
+
+extern int g_vehicle_capacity[_MAX_NUMBER_OF_VEHICLES];
+
+extern int g_passenger_assigned_vehicle_id[_MAX_NUMBER_OF_PASSENGERS];
+extern int g_passenger_path_node_sequence[_MAX_NUMBER_OF_PASSENGERS][_MAX_NUMBER_OF_TIME_INTERVALS];
+extern int g_passenger_path_link_sequence[_MAX_NUMBER_OF_PASSENGERS][_MAX_NUMBER_OF_TIME_INTERVALS];
+extern int g_passenger_path_time_sequence[_MAX_NUMBER_OF_PASSENGERS][_MAX_NUMBER_OF_TIME_INTERVALS];
+extern int g_passenger_path_number_of_nodes[_MAX_NUMBER_OF_PASSENGERS];
+
+extern int g_path_node_sequence[_MAX_NUMBER_OF_TIME_INTERVALS];
+extern int g_path_link_sequence[_MAX_NUMBER_OF_TIME_INTERVALS];
+extern int g_path_time_sequence[_MAX_NUMBER_OF_TIME_INTERVALS];
+extern int g_path_number_of_nodes;
+extern float g_path_travel_time[_MAX_NUMBER_OF_VEHICLES];
+
+extern int g_number_of_links;
+extern int g_number_of_nodes;
+extern int g_number_of_physical_nodes;
+
+extern int g_number_of_time_intervals;
+
+extern int g_number_of_vehicles;
+extern int g_number_of_physical_vehicles;
+
+extern int g_number_of_toll_records;
+
+extern int g_number_of_LR_iterations;
+extern int g_minimum_subgradient_step_size;
+
+extern int g_shortest_path_debugging_flag;
+extern float g_waiting_time_ratio;
+extern float g_dummy_vehicle_cost_per_hour;
+
+extern bool g_no_changed_route_for_passengers_flag;
+extern bool g_no_capacity_multiplier_flag;
+
+extern float g_travel_time_budget;
+extern float g_idle_vehicle_benefit;
+
+
+extern float*** l_state_node_label_cost;
+extern int*** l_state_node_predecessor;
+extern int*** l_state_time_predecessor;
+extern int*** l_state_carrying_predecessor;
+
+//parallel computing 
+extern float**** lp_state_node_label_cost;
+extern int**** lp_state_node_predecessor;
+extern int**** lp_state_time_predecessor;
+extern int**** lp_state_carrying_predecessor;
+
+extern float**** lp_backward_state_node_label_cost;
+
+extern float** g_node_to_node_shorest_travel_time;
+
+extern float*** g_v_arc_cost;
+extern float*** g_v_to_node_cost_used_for_upper_bound;
+extern float*** g_v_to_node_cost_used_for_lower_bound;
+extern float*** g_v_vertex_waiting_cost;
+
+extern class CVRState;  //class for vehicle scheduling states;
 
 class V2PAssignment
 {

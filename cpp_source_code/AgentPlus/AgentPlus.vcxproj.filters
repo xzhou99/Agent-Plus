@@ -44,6 +44,9 @@
     <ClCompile Include="Branch_and_Bound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SpaceTimePrism.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AgentPlus.rc">
