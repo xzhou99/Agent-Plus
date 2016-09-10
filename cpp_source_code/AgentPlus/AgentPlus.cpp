@@ -1335,11 +1335,9 @@ void g_ReadInputData()
 				parser.GetValueByFieldName("lane_capacity_in_vhc_per_hour", capacity_per_time_interval);
 
 				parser.GetValueByFieldName("speed_limit", speed);
-				if (speed >= 70)
-					speed = 70;
 
-				if (speed <= 25)
-					speed = 25;
+				if (speed <= 1)
+					speed = 1;
 
 				travel_time = link_length * 60 / max(1, speed);
 				parser.GetValueByFieldName("jam_density", jam_density);
@@ -2799,7 +2797,7 @@ float g_optimal_label_correcting(int origin_node, int departure_time)
 
 			bool  b_node_updated = false;
 
-			int new_to_node_arrival_time = g_node_label_earliest_arrival_time[from_node] + g_link_free_flow_travel_time[link_no];
+			float new_to_node_arrival_time = g_node_label_earliest_arrival_time[from_node] + g_link_free_flow_travel_time_float_value[link_no];
 
 			//					if (g_shortest_path_debugging_flag)
 			//						fprintf(g_pFileDebugLog, "SP: checking from node %d, to node %d at time %d, FFTT = %d\n",
@@ -2840,7 +2838,7 @@ float g_optimal_label_correcting(int origin_node, int departure_time)
 
 	for (int i = 0; i <= g_number_of_nodes; i++) //Initialization for all nodes
 	{
-		g_node_to_node_shorest_travel_time[origin_node][i] = g_node_label_earliest_arrival_time[i];
+		g_node_to_node_shorest_travel_time[origin_node][i] = g_node_label_earliest_arrival_time[i] - departure_time;
 
 	}
 	return total_cost;
@@ -2992,6 +2990,63 @@ void g_generate_travel_time_matrix()
 }
 
 
+bool g_generate_travel_time_matrix_output()
+{
+	fprintf(g_pFileOutputLog, "---output travel time matrix between activity locations---\n");
+
+	std::vector<int> activity_location_vector;
+	CCSVParser parser;
+	if (parser.OpenCSVFile("input_activity_location.csv", true))
+	{
+		std::map<int, int> node_id_map;
+
+		while (parser.ReadRecord())  // if this line contains [] mark, then we will also read field headers.
+		{
+
+			string name;
+
+			int node_type;
+			int node_id;
+			double X;
+			double Y;
+			if (parser.GetValueByFieldName("node_id", node_id) == false)
+				continue;
+
+			if (node_id <= 0 || g_number_of_nodes >= _MAX_NUMBER_OF_NODES || g_internal_node_no_map.find(node_id) == g_internal_node_no_map.end())
+			{
+				cout << "node_id " << node_id << " is out of range" << endl;
+				g_ProgramStop();
+			}
+			activity_location_vector.push_back(g_internal_node_no_map[node_id]);
+
+		}
+	}
+
+	if (activity_location_vector.size() == 0)
+		return false;
+
+	for (int p1 = 0; p1 < activity_location_vector.size(); p1++)
+	{
+		cout << ">>find shortest path tree for pax p = " << p1 << "..." << endl;
+		g_optimal_label_correcting(activity_location_vector[p1], 1);
+
+		for (int p2 = 0; p2 < activity_location_vector.size(); p2++)
+		{
+			if (p1 != p2)
+			{
+			
+			float minimum_travel_time_p1_p2 = g_node_to_node_shorest_travel_time[activity_location_vector[p1]][activity_location_vector[p2]];
+			fprintf(g_pFileOutputLog, "link, %d, %d, %f\n", g_external_node_id_map[activity_location_vector[p1]], g_external_node_id_map[activity_location_vector[p2]], minimum_travel_time_p1_p2);
+
+			}
+		}
+
+	}
+
+	fprintf(g_pFileOutputLog, "-----\n,");
+	return true;
+}
+
 float g_optimal_time_dependenet_dynamic_programming_space_time_prism(
 	int vehicle_id,
 	int origin_node,
@@ -3049,7 +3104,7 @@ float g_optimal_time_dependenet_dynamic_programming_space_time_prism(
 	// step 3: //dynamic programming
 	for (int t = departure_time_beginning; t <= arrival_time_ending; t++)  //first loop: time
 	{
-		if (t % 100 == 0)
+		if (t % 50 == 0)
 		{
 			cout << "forward vehicle " << vehicle_id << " is scanning time " << t << "..." << endl;
 
@@ -3331,6 +3386,46 @@ float g_optimal_time_dependenet_dynamic_programming_space_time_prism(
 	fprintf(g_pFileSTPrismLog, "destination('%d','%d','%d')=1;\n", vehicle_id, g_external_node_id_map[destination_node], arrival_time_ending);
 
 
+
+	count = 0;
+	fprintf(g_pFileSTPrismLog, "nodes\n");
+
+std::map<int,int> node_id_map;
+	for (int link = 0; link < g_number_of_links; link++)  // for each link (i,j)
+	{
+		int from_node = g_link_from_node_number[link];
+
+		int to_node = g_link_to_node_number[link];
+		int travel_time = g_link_free_flow_travel_time[link];
+
+		for (int t = departure_time_beginning; t <= arrival_time_ending; t++)
+		{
+			int c = g_link_free_flow_travel_time[link];
+
+			if ((lp_state_node_label_cost[0][from_node][t][0] + lp_state_node_label_cost[1][from_node][t][0]) <= timewindow + 1)
+			{
+				node_id_map[from_node]=1;
+				node_id_map[to_node]= 1;
+
+			}
+
+		}
+	}
+
+	fprintf(g_pFileSTPrismLog, "\n");
+	count = 0;
+	for (int i = 0; i <= g_number_of_nodes; i++) //Initialization for all nodes
+	{
+		if (node_id_map.find(i) != node_id_map.end())
+				{
+					//						fprintf(g_pFileSTPrismLog, "%d.%d.%d 1\n", g_external_node_id_map[i], t, lp_state_node_label_cost[0][i][t][w1], lp_state_node_label_cost[1][i][t][0]);
+					fprintf(g_pFileSTPrismLog, "%d,\n", g_external_node_id_map[i]);
+					count++;
+				}
+	
+	}
+
+	fprintf(g_pFileSTPrismLog, "\n");
 	count = 0;
 	for (int i = 0; i <= g_number_of_nodes; i++) //Initialization for all nodes
 	{
@@ -3614,7 +3709,15 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 	g_allocate_memory_travel_time(0);
 	g_generate_travel_time_matrix();
+	if (g_generate_travel_time_matrix_output() == true)
+	{
+		g_free_memory_travel_time(0);
+		fclose(g_pFileOutputLog);
+		cout << "End of Optimization " << endl;
+		cout << "free memory.." << endl;
 
+		return 1;
+	}
 	//DP
 	g_allocate_memory(0);
 
@@ -3628,6 +3731,8 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	//g_Optimization_Lagrangian_Method_Vehicle_Routing_Problem_Simple_Variables(&g_VRP_data);
 	//else
 	// g_Brand_and_Bound();
+
+
 
 	if (g_space_time_prism_mode ==1)
  	  g_Generate_SpaceTimePrims(&g_VRP_data);
