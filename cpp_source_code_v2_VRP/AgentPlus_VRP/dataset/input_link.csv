@@ -1,0 +1,7 @@
+name,link_id,link_key,speed_sensor_id,count_sensor_id,from_node_id_old,from_node_id,to_node_id,link_type_name,direction,travel_time
+,0,,,,,11,12,Suburban_Centroid Connector,1,1
+,,,,,,21,22,,,2
+,,,,,,100,11,,,1
+,,,,,,100,21,,,1
+,,,,,,12,200,,,1
+,,,,,,22,200,,,1

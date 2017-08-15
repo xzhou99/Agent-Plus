@@ -1,0 +1,4 @@
+Network has 0 nodes, 0 links, 0  passengers, 0 vehicles
+
+
+CPU Running Time = 9 milliseconds

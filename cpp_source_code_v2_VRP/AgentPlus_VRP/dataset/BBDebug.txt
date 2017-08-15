@@ -1,0 +1,21 @@
+!!!   Cal: update upper bound from (node UB)99999 to a new 2
+   Node 0 with LB =2 UB= 2
+   Cal: pax 2 with competing v[ 0]=1
+   Cal: pax 2 with competing v[ 1]=2
+Find an active node 0 with a  UB cost = 2 LB cost = 2
+   Branch: pax 2 with competing v[ 0]=1
+   New Node 1 with vehicle 1 to Pax 2
+   Node 1 with LB =3 UB= 2
+   Branch: pax 2 with competing v[ 1]=2
+   New Node 2 with vehicle 2 to Pax 2
+   Node 2 with LB =3 UB= 2
+   pax 2 with exclusive branches 
+   Node 3 with LB =3 UB= 2
+Find an active node 1 with a  UB cost = 2 LB cost = 3
+   cut node 1 as LBCost = 3 > current best upper bound 2
+Find an active node 2 with a  UB cost = 2 LB cost = 3
+   cut node 2 as LBCost = 3 > current best upper bound 2
+Find an active node 3 with a  UB cost = 2 LB cost = 3
+   cut node 3 as LBCost = 3 > current best upper bound 2
+
+Optimal Cost is 2 Number of Nodes checked = 4
