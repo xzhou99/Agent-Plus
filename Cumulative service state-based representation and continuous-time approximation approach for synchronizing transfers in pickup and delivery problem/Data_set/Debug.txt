@@ -1,0 +1,786 @@
+step 0: initialization 
+
+
+--Unchanged state_index = 0 s = _0 at link = 0 from node = 4(1000) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 0 from node 4(1000), to node 8(2000) from time 0 to time 5, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 0 from node 4(1000), to node 8(2000) from time 0 to time 5, current cost: 0.00, from cost 0.00 ->5.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 1 from node = 8(2000) to node = 0(10) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 1 from node 8(2000), to node 0(10) from time 5 to time 15, FFTT = 10, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 1 from node 8(2000), to node 0(10) from time 5 to time 15, current cost: 0.00, from cost 0.00 ->15.00, updating node: 0 
+
+--Unchanged state_index = 0 s = _0 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 5 to time 10, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 5 to time 10, current cost: 0.00, from cost 0.00 ->10.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 5 to time 10, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 5 to time 10, current cost: 0.00, from cost 0.00 ->10.00, updating node: 5 
+
+--Unchanged state_index = 0 s = _0 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 10 to time 15, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 10 to time 15, current cost: 0.00, from cost 0.00 ->15.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 10 to time 15, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 10 to time 15, current cost: 0.00, from cost 0.00 ->15.00, updating node: 10 
+
+--Adding state_index = 1 s = _1 at link = 2 from node = 0(10) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 2 from node 0(10), to node 8(2000) from time 15 to time 25, FFTT = 10, from s1=_0 to s2=_1
+DP: vehicle_no 1 checking at link_no 2 from node 0(10), to node 8(2000) from time 15 to time 25, current cost: 0.00, from cost 0.00 ->25.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 15 to time 20, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 15 to time 20, current cost: 0.00, from cost 0.00 ->20.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 15 to time 20, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 15 to time 20, current cost: 0.00, from cost 0.00 ->20.00, updating node: 5 
+
+--Unchanged state_index = 0 s = _0 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 9 from node 10(2002), to node 9(2001) from time 15 to time 20, FFTT = 5, from s1=_0 to s2=_0
+
+--Unchanged state_index = 0 s = _0 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 15 to time 20, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 15 to time 20, current cost: 0.00, from cost 0.00 ->20.00, updating node: 7 
+
+--Unchanged state_index = 0 s = _0 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 20 to time 25, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 20 to time 25, current cost: 0.00, from cost 0.00 ->25.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 20 to time 25, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 20 to time 25, current cost: 0.00, from cost 0.00 ->25.00, updating node: 10 
+
+--Unchanged state_index = 0 s = _0 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 25 to time 30, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 25 to time 30, current cost: 0.00, from cost 0.00 ->30.00, updating node: 9 
+
+--Unchanged state_index = 1 s = _1 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 25 to time 30, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 25 to time 30, current cost: 0.00, from cost 0.00 ->30.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 25 to time 30, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 25 to time 30, current cost: 0.00, from cost 0.00 ->30.00, updating node: 5 
+
+--Unchanged state_index = 1 s = _1 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 25 to time 30, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 25 to time 30, current cost: 0.00, from cost 0.00 ->30.00, updating node: 5 
+
+--Unchanged state_index = 0 s = _0 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 9 from node 10(2002), to node 9(2001) from time 25 to time 30, FFTT = 5, from s1=_0 to s2=_0
+
+--Unchanged state_index = 0 s = _0 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 25 to time 30, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 25 to time 30, current cost: 0.00, from cost 0.00 ->30.00, updating node: 7 
+
+--Adding state_index = 2 s = _2 at link = 4 from node = 9(2001) to node = 1(12) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 4 from node 9(2001), to node 1(12) from time 30 to time 35, FFTT = 5, from s1=_1 to s2=_2
+DP: vehicle_no 1 checking at link_no 4 from node 9(2001), to node 1(12) from time 30 to time 35, current cost: 0.00, from cost 0.00 ->35.00, updating node: 1 
+
+--Unchanged state_index = 0 s = _0 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 30 to time 35, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 30 to time 35, current cost: 0.00, from cost 0.00 ->35.00, updating node: 8 
+
+--Unchanged state_index = 1 s = _1 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 30 to time 35, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 30 to time 35, current cost: 0.00, from cost 0.00 ->35.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 30 to time 35, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 30 to time 35, current cost: 0.00, from cost 0.00 ->35.00, updating node: 2 
+
+--Unchanged state_index = 1 s = _1 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 30 to time 35, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 30 to time 35, current cost: 0.00, from cost 0.00 ->35.00, updating node: 2 
+
+--Unchanged state_index = 0 s = _0 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 30 to time 35, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 30 to time 35, current cost: 0.00, from cost 0.00 ->35.00, updating node: 10 
+
+--Unchanged state_index = 1 s = _1 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 30 to time 35, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 30 to time 35, current cost: 0.00, from cost 0.00 ->35.00, updating node: 10 
+
+--Unchanged state_index = 0 s = _0 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 35 to time 40, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 35 to time 40, current cost: 0.00, from cost 0.00 ->40.00, updating node: 9 
+
+--Unchanged state_index = 1 s = _1 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 35 to time 40, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 35 to time 40, current cost: 0.00, from cost 0.00 ->40.00, updating node: 9 
+
+--Unchanged state_index = 2 s = _2 at link = 5 from node = 1(12) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 5 from node 1(12), to node 9(2001) from time 35 to time 40, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 5 from node 1(12), to node 9(2001) from time 35 to time 40, current cost: 0.00, from cost 0.00 ->40.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 35 to time 40, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 35 to time 40, current cost: 0.00, from cost 0.00 ->40.00, updating node: 5 
+
+--Unchanged state_index = 1 s = _1 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 35 to time 40, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 35 to time 40, current cost: 0.00, from cost 0.00 ->40.00, updating node: 5 
+
+--Unchanged state_index = 0 s = _0 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 9 from node 10(2002), to node 9(2001) from time 35 to time 40, FFTT = 5, from s1=_0 to s2=_0
+
+--Unchanged state_index = 1 s = _1 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 9 from node 10(2002), to node 9(2001) from time 35 to time 40, FFTT = 5, from s1=_1 to s2=_1
+
+--Adding state_index = 3 s = _9 at link = 13 from node = 10(2002) to node = 3(19) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 13 from node 10(2002), to node 3(19) from time 35 to time 40, FFTT = 5, from s1=_1 to s2=_9
+DP: vehicle_no 1 checking at link_no 13 from node 10(2002), to node 3(19) from time 35 to time 40, current cost: 0.00, from cost 0.00 ->40.00, updating node: 3 
+
+--Unchanged state_index = 0 s = _0 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 35 to time 40, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 35 to time 40, current cost: 0.00, from cost 0.00 ->40.00, updating node: 7 
+
+--Unchanged state_index = 1 s = _1 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 35 to time 40, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 35 to time 40, current cost: 0.00, from cost 0.00 ->40.00, updating node: 7 
+
+--Unchanged state_index = 0 s = _0 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 40 to time 45, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 8 
+
+--Unchanged state_index = 1 s = _1 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 40 to time 45, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 8 
+
+--Unchanged state_index = 2 s = _2 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 40 to time 45, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 40 to time 45, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 2 
+
+--Unchanged state_index = 1 s = _1 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 40 to time 45, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 2 
+
+--Unchanged state_index = 2 s = _2 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 40 to time 45, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 2 
+
+--Unchanged state_index = 0 s = _0 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 40 to time 45, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 10 
+
+--Unchanged state_index = 1 s = _1 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 40 to time 45, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 10 
+
+--Unchanged state_index = 2 s = _2 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 40 to time 45, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 10 
+
+--Unchanged state_index = 3 s = _9 at link = 14 from node = 3(19) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 14 from node 3(19), to node 10(2002) from time 40 to time 45, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 1 checking at link_no 14 from node 3(19), to node 10(2002) from time 40 to time 45, current cost: 0.00, from cost 0.00 ->45.00, updating node: 10 
+
+--Unchanged state_index = 0 s = _0 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 45 to time 50, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 9 
+
+--Unchanged state_index = 1 s = _1 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 45 to time 50, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 9 
+
+--Unchanged state_index = 2 s = _2 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 45 to time 50, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 3 from node 8(2000), to node 9(2001) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 45 to time 50, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 5 
+
+--Unchanged state_index = 1 s = _1 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 45 to time 50, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 5 
+
+--Unchanged state_index = 2 s = _2 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 45 to time 50, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 7 from node 8(2000), to node 5(1009) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 5 
+
+--Unchanged state_index = 0 s = _0 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 9 from node 10(2002), to node 9(2001) from time 45 to time 50, FFTT = 5, from s1=_0 to s2=_0
+
+--Unchanged state_index = 1 s = _1 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 9 from node 10(2002), to node 9(2001) from time 45 to time 50, FFTT = 5, from s1=_1 to s2=_1
+
+--Unchanged state_index = 2 s = _2 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 9 from node 10(2002), to node 9(2001) from time 45 to time 50, FFTT = 5, from s1=_2 to s2=_2
+
+--Unchanged state_index = 3 s = _9 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 9 from node 10(2002), to node 9(2001) from time 45 to time 50, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 1 checking at link_no 9 from node 10(2002), to node 9(2001) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 9 
+
+--Adding state_index = 1 s = _1 at link = 11 from node = 2(512) to node = 9(2001) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 11 from node 2(512), to node 9(2001) from time 45 to time 50, FFTT = 5, from s1=_2 to s2=_1
+
+--Adding state_index = 3 s = _9 at link = 13 from node = 10(2002) to node = 3(19) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 13 from node 10(2002), to node 3(19) from time 45 to time 50, FFTT = 5, from s1=_1 to s2=_9
+DP: vehicle_no 1 checking at link_no 13 from node 10(2002), to node 3(19) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 3 
+
+--Unchanged state_index = 0 s = _0 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 45 to time 50, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 7 
+
+--Unchanged state_index = 1 s = _1 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 45 to time 50, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 7 
+
+--Unchanged state_index = 2 s = _2 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 45 to time 50, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 7 
+
+--Unchanged state_index = 3 s = _9 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 45 to time 50, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 1 checking at link_no 15 from node 10(2002), to node 7(1019) from time 45 to time 50, current cost: 0.00, from cost 0.00 ->50.00, updating node: 7 
+
+--Unchanged state_index = 0 s = _0 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 50 to time 55, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 8 
+
+--Unchanged state_index = 1 s = _1 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 50 to time 55, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 8 
+
+--Unchanged state_index = 2 s = _2 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 50 to time 55, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 8 
+
+--Unchanged state_index = 3 s = _9 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 50 to time 55, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 1 checking at link_no 6 from node 9(2001), to node 8(2000) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 50 to time 55, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 2 
+
+--Unchanged state_index = 1 s = _1 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 50 to time 55, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 2 
+
+--Unchanged state_index = 2 s = _2 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 50 to time 55, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 2 
+
+--Unchanged state_index = 3 s = _9 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 50 to time 55, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 1 checking at link_no 10 from node 9(2001), to node 2(512) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 2 
+
+--Unchanged state_index = 0 s = _0 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 50 to time 55, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 10 
+
+--Unchanged state_index = 1 s = _1 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 50 to time 55, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 10 
+
+--Unchanged state_index = 2 s = _2 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 50 to time 55, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 10 
+
+--Unchanged state_index = 3 s = _9 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 50 to time 55, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 1 checking at link_no 12 from node 9(2001), to node 10(2002) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 10 
+
+--Unchanged state_index = 3 s = _9 at link = 14 from node = 3(19) to node = 10(2002) vehicle_no = 1--
+
+SP: vehicle_no 1 checking at link_no 14 from node 3(19), to node 10(2002) from time 50 to time 55, FFTT = 5, from s1=_9 to s2=_9
+vehicle 1: relaying state no. 0:(0) _0, with label cost 50.000000
+vehicle 1: relaying state no. 2:(0) _2, with label cost 50.000000
+
+--Unchanged state_index = 0 s = _0 at link = 8 from node = 6(1010) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 8 from node 6(1010), to node 10(2002) from time 50 to time 55, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 8 from node 6(1010), to node 10(2002) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 10 
+
+--Unchanged state_index = 2 s = _2 at link = 8 from node = 6(1010) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 8 from node 6(1010), to node 10(2002) from time 50 to time 55, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 8 from node 6(1010), to node 10(2002) from time 50 to time 55, current cost: 0.00, from cost 0.00 ->55.00, updating node: 10 
+
+--Unchanged state_index = 0 s = _0 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 55 to time 60, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 55 to time 60, current cost: 0.00, from cost 0.00 ->60.00, updating node: 9 
+
+--Unchanged state_index = 2 s = _2 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 55 to time 60, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 55 to time 60, current cost: 0.00, from cost 0.00 ->60.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 55 to time 60, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 55 to time 60, current cost: 0.00, from cost 0.00 ->60.00, updating node: 7 
+
+--Unchanged state_index = 2 s = _2 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 55 to time 60, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 55 to time 60, current cost: 0.00, from cost 0.00 ->60.00, updating node: 7 
+
+--Unchanged state_index = 0 s = _0 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 60 to time 65, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 60 to time 65, current cost: 0.00, from cost 0.00 ->65.00, updating node: 8 
+
+--Unchanged state_index = 2 s = _2 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 60 to time 65, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 60 to time 65, current cost: 0.00, from cost 0.00 ->65.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 60 to time 65, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 60 to time 65, current cost: 0.00, from cost 0.00 ->65.00, updating node: 2 
+
+--Unchanged state_index = 2 s = _2 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 60 to time 65, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 60 to time 65, current cost: 0.00, from cost 0.00 ->65.00, updating node: 2 
+
+--Unchanged state_index = 0 s = _0 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 60 to time 65, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 60 to time 65, current cost: 0.00, from cost 0.00 ->65.00, updating node: 10 
+
+--Unchanged state_index = 2 s = _2 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 60 to time 65, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 60 to time 65, current cost: 0.00, from cost 0.00 ->65.00, updating node: 10 
+
+--Unchanged state_index = 0 s = _0 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 65 to time 70, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 65 to time 70, current cost: 0.00, from cost 0.00 ->70.00, updating node: 9 
+
+--Unchanged state_index = 2 s = _2 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 65 to time 70, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 65 to time 70, current cost: 0.00, from cost 0.00 ->70.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 65 to time 70, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 65 to time 70, current cost: 0.00, from cost 0.00 ->70.00, updating node: 5 
+
+--Unchanged state_index = 2 s = _2 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 65 to time 70, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 65 to time 70, current cost: 0.00, from cost 0.00 ->70.00, updating node: 5 
+
+--Unchanged state_index = 0 s = _0 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 65 to time 70, FFTT = 5, from s1=_0 to s2=_0
+
+--Unchanged state_index = 2 s = _2 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 65 to time 70, FFTT = 5, from s1=_2 to s2=_2
+
+--Adding state_index = 1 s = _1 at link = 11 from node = 2(512) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 11 from node 2(512), to node 9(2001) from time 65 to time 70, FFTT = 5, from s1=_2 to s2=_1
+DP: vehicle_no 2 checking at link_no 11 from node 2(512), to node 9(2001) from time 65 to time 70, current cost: 0.00, from cost 0.00 ->70.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 65 to time 70, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 65 to time 70, current cost: 0.00, from cost 0.00 ->70.00, updating node: 7 
+
+--Unchanged state_index = 2 s = _2 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 65 to time 70, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 65 to time 70, current cost: 0.00, from cost 0.00 ->70.00, updating node: 7 
+
+--Unchanged state_index = 0 s = _0 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 70 to time 75, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 70 to time 75, current cost: 0.00, from cost 0.00 ->75.00, updating node: 8 
+
+--Unchanged state_index = 1 s = _1 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 70 to time 75, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 70 to time 75, current cost: 0.00, from cost 0.00 ->75.00, updating node: 8 
+
+--Unchanged state_index = 2 s = _2 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 70 to time 75, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 70 to time 75, current cost: 0.00, from cost 0.00 ->75.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 70 to time 75, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 70 to time 75, current cost: 0.00, from cost 0.00 ->75.00, updating node: 2 
+
+--Unchanged state_index = 1 s = _1 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 70 to time 75, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 70 to time 75, current cost: 0.00, from cost 0.00 ->75.00, updating node: 2 
+
+--Unchanged state_index = 2 s = _2 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 70 to time 75, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 70 to time 75, current cost: 0.00, from cost 0.00 ->75.00, updating node: 2 
+
+--Unchanged state_index = 0 s = _0 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 70 to time 75, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 70 to time 75, current cost: 0.00, from cost 0.00 ->75.00, updating node: 10 
+
+--Unchanged state_index = 1 s = _1 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 70 to time 75, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 70 to time 75, current cost: 0.00, from cost 0.00 ->75.00, updating node: 10 
+
+--Unchanged state_index = 2 s = _2 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 70 to time 75, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 70 to time 75, current cost: 0.00, from cost 0.00 ->75.00, updating node: 10 
+
+--Unchanged state_index = 0 s = _0 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 75 to time 80, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 9 
+
+--Unchanged state_index = 1 s = _1 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 75 to time 80, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 9 
+
+--Unchanged state_index = 2 s = _2 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 75 to time 80, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 75 to time 80, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 5 
+
+--Unchanged state_index = 1 s = _1 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 75 to time 80, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 5 
+
+--Unchanged state_index = 2 s = _2 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 75 to time 80, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 5 
+
+--Unchanged state_index = 0 s = _0 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 75 to time 80, FFTT = 5, from s1=_0 to s2=_0
+
+--Unchanged state_index = 1 s = _1 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 75 to time 80, FFTT = 5, from s1=_1 to s2=_1
+
+--Unchanged state_index = 2 s = _2 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 75 to time 80, FFTT = 5, from s1=_2 to s2=_2
+
+--Adding state_index = 1 s = _1 at link = 11 from node = 2(512) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 11 from node 2(512), to node 9(2001) from time 75 to time 80, FFTT = 5, from s1=_2 to s2=_1
+
+--Adding state_index = 3 s = _9 at link = 13 from node = 10(2002) to node = 3(19) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 13 from node 10(2002), to node 3(19) from time 75 to time 80, FFTT = 5, from s1=_1 to s2=_9
+DP: vehicle_no 2 checking at link_no 13 from node 10(2002), to node 3(19) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 3 
+
+--Unchanged state_index = 0 s = _0 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 75 to time 80, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 7 
+
+--Unchanged state_index = 1 s = _1 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 75 to time 80, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 7 
+
+--Unchanged state_index = 2 s = _2 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 75 to time 80, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 75 to time 80, current cost: 0.00, from cost 0.00 ->80.00, updating node: 7 
+
+--Unchanged state_index = 0 s = _0 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 80 to time 85, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 8 
+
+--Unchanged state_index = 1 s = _1 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 80 to time 85, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 8 
+
+--Unchanged state_index = 2 s = _2 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 80 to time 85, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 80 to time 85, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 2 
+
+--Unchanged state_index = 1 s = _1 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 80 to time 85, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 2 
+
+--Unchanged state_index = 2 s = _2 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 80 to time 85, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 2 
+
+--Unchanged state_index = 0 s = _0 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 80 to time 85, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 10 
+
+--Unchanged state_index = 1 s = _1 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 80 to time 85, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 10 
+
+--Unchanged state_index = 2 s = _2 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 80 to time 85, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 10 
+
+--Unchanged state_index = 3 s = _9 at link = 14 from node = 3(19) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 14 from node 3(19), to node 10(2002) from time 80 to time 85, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 2 checking at link_no 14 from node 3(19), to node 10(2002) from time 80 to time 85, current cost: 0.00, from cost 0.00 ->85.00, updating node: 10 
+
+--Unchanged state_index = 0 s = _0 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 85 to time 90, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 9 
+
+--Unchanged state_index = 1 s = _1 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 85 to time 90, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 9 
+
+--Unchanged state_index = 2 s = _2 at link = 3 from node = 8(2000) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 85 to time 90, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 3 from node 8(2000), to node 9(2001) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 9 
+
+--Unchanged state_index = 0 s = _0 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 85 to time 90, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 5 
+
+--Unchanged state_index = 1 s = _1 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 85 to time 90, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 5 
+
+--Unchanged state_index = 2 s = _2 at link = 7 from node = 8(2000) to node = 5(1009) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 85 to time 90, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 7 from node 8(2000), to node 5(1009) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 5 
+
+--Unchanged state_index = 0 s = _0 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 85 to time 90, FFTT = 5, from s1=_0 to s2=_0
+
+--Unchanged state_index = 1 s = _1 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 85 to time 90, FFTT = 5, from s1=_1 to s2=_1
+
+--Unchanged state_index = 2 s = _2 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 85 to time 90, FFTT = 5, from s1=_2 to s2=_2
+
+--Unchanged state_index = 3 s = _9 at link = 9 from node = 10(2002) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 85 to time 90, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 2 checking at link_no 9 from node 10(2002), to node 9(2001) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 9 
+
+--Adding state_index = 1 s = _1 at link = 11 from node = 2(512) to node = 9(2001) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 11 from node 2(512), to node 9(2001) from time 85 to time 90, FFTT = 5, from s1=_2 to s2=_1
+
+--Unchanged state_index = 0 s = _0 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 85 to time 90, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 7 
+
+--Unchanged state_index = 1 s = _1 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 85 to time 90, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 7 
+
+--Unchanged state_index = 2 s = _2 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 85 to time 90, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 7 
+
+--Unchanged state_index = 3 s = _9 at link = 15 from node = 10(2002) to node = 7(1019) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 85 to time 90, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 2 checking at link_no 15 from node 10(2002), to node 7(1019) from time 85 to time 90, current cost: 0.00, from cost 0.00 ->90.00, updating node: 7 
+
+--Unchanged state_index = 0 s = _0 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 90 to time 95, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 8 
+
+--Unchanged state_index = 1 s = _1 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 90 to time 95, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 8 
+
+--Unchanged state_index = 2 s = _2 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 90 to time 95, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 8 
+
+--Unchanged state_index = 3 s = _9 at link = 6 from node = 9(2001) to node = 8(2000) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 90 to time 95, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 2 checking at link_no 6 from node 9(2001), to node 8(2000) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 8 
+
+--Unchanged state_index = 0 s = _0 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 90 to time 95, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 2 
+
+--Unchanged state_index = 1 s = _1 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 90 to time 95, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 2 
+
+--Unchanged state_index = 2 s = _2 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 90 to time 95, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 2 
+
+--Unchanged state_index = 3 s = _9 at link = 10 from node = 9(2001) to node = 2(512) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 90 to time 95, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 2 checking at link_no 10 from node 9(2001), to node 2(512) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 2 
+
+--Unchanged state_index = 0 s = _0 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 90 to time 95, FFTT = 5, from s1=_0 to s2=_0
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 10 
+
+--Unchanged state_index = 1 s = _1 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 90 to time 95, FFTT = 5, from s1=_1 to s2=_1
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 10 
+
+--Unchanged state_index = 2 s = _2 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 90 to time 95, FFTT = 5, from s1=_2 to s2=_2
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 10 
+
+--Unchanged state_index = 3 s = _9 at link = 12 from node = 9(2001) to node = 10(2002) vehicle_no = 2--
+
+SP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 90 to time 95, FFTT = 5, from s1=_9 to s2=_9
+DP: vehicle_no 2 checking at link_no 12 from node 9(2001), to node 10(2002) from time 90 to time 95, current cost: 0.00, from cost 0.00 ->95.00, updating node: 10 
+
+--------------------------The final cost of each vehicle at every time stamp--------------------------
+
+index 0, Vehicle_no = 1, time = 0, node_id = 1000, state = _0, cost = 0.000000
+index 1, Vehicle_no = 1, time = 5, node_id = 2000, state = _0, cost = 5.000000
+index 2, Vehicle_no = 1, time = 15, node_id = 10, state = _0, cost = 15.000000
+index 3, Vehicle_no = 1, time = 25, node_id = 2000, state = _1, cost = 25.000000
+index 4, Vehicle_no = 1, time = 30, node_id = 2001, state = _1, cost = 30.000000
+index 5, Vehicle_no = 1, time = 35, node_id = 12, state = _2, cost = 35.000000
+index 6, Vehicle_no = 1, time = 40, node_id = 2001, state = _2, cost = 40.000000
+index 7, Vehicle_no = 1, time = 45, node_id = 2000, state = _2, cost = 45.000000
+index 8, Vehicle_no = 2, time = 50, node_id = 1010, state = _2, cost = 50.000000
+index 9, Vehicle_no = 2, time = 55, node_id = 2002, state = _2, cost = 55.000000
+index 10, Vehicle_no = 2, time = 60, node_id = 2001, state = _2, cost = 60.000000
+index 11, Vehicle_no = 2, time = 65, node_id = 512, state = _2, cost = 65.000000
+index 12, Vehicle_no = 2, time = 70, node_id = 2001, state = _1, cost = 70.000000
+index 13, Vehicle_no = 2, time = 75, node_id = 2002, state = _1, cost = 75.000000
+index 14, Vehicle_no = 2, time = 80, node_id = 19, state = _9, cost = 80.000000
+index 15, Vehicle_no = 2, time = 85, node_id = 2002, state = _9, cost = 85.000000
+index 16, Vehicle_no = 2, time = 90, node_id = 1019, state = _9, cost = 90.000000
+CPU Running Time = 97673 milliseconds
